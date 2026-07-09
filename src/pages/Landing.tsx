@@ -49,7 +49,7 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw Biomechanical Crease & Ball Tracking in hero illustration
+  // Draw Biomechanical Metrics Equalizer in hero illustration
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -61,205 +61,180 @@ export default function Landing() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // 1. Draw grid background lines
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.015)';
+    // 1. Draw background grid
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
     ctx.lineWidth = 1;
     for (let i = 0; i < width; i += 20) {
       ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
     }
 
-    // 2. Draw 3D Perspective Pitch Grid
-    // Vanishing point is at (10, 80)
-    const vpX = 10;
-    const vpY = 80;
-    
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
-    ctx.lineWidth = 1;
-    
-    // Pitch edges converging to vp
-    ctx.beginPath();
-    ctx.moveTo(vpX, vpY); ctx.lineTo(260, height - 10);
-    ctx.moveTo(vpX, vpY); ctx.lineTo(130, height - 10);
-    ctx.stroke();
+    // 2. Define the metrics parameters
+    const metrics = [
+      {
+        name: "HIP_ROTATION",
+        color: "#00f0ff", // Neon Cyan
+        glow: "rgba(0, 240, 255, 0.2)",
+        y: 65,
+        fn: (xPercent: number) => {
+          return 15 + 30 * Math.exp(-Math.pow((xPercent - 65) / 12, 2));
+        },
+        unit: "°"
+      },
+      {
+        name: "KNEE_EXTENSION",
+        color: "#a3e635", // Neon Green
+        glow: "rgba(163, 230, 53, 0.2)",
+        y: 115,
+        fn: (xPercent: number) => {
+          return 35 - 25 / (1 + Math.exp(-(xPercent - 60) / 4));
+        },
+        unit: "°"
+      },
+      {
+        name: "SHOULDER_TILT",
+        color: "#c084fc", // Neon Purple
+        glow: "rgba(192, 132, 252, 0.2)",
+        y: 165,
+        fn: (xPercent: number) => {
+          return 20 + 15 * Math.sin((xPercent * Math.PI) / 80 - 0.2);
+        },
+        unit: "°"
+      },
+      {
+        name: "WRIST_VELOCITY",
+        color: "#fbbf24", // Amber
+        glow: "rgba(251, 191, 36, 0.2)",
+        y: 215,
+        fn: (xPercent: number) => {
+          return 5 + 40 * Math.exp(-Math.pow((xPercent - 68) / 8, 2));
+        },
+        unit: " m/s"
+      }
+    ];
 
-    // Crease lines (horizontal lines in perspective)
-    const creaseYCoords = [110, 140, 180, 230, 270];
-    creaseYCoords.forEach(cy => {
-      const dy = height - 10 - vpY;
-      const lx = vpX + (cy - vpY) * (130 - vpX) / dy;
-      const rx = vpX + (cy - vpY) * (260 - vpX) / dy;
-      
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    const startX = 35;
+    const endX = width - 25;
+    const graphWidth = endX - startX;
+
+    const t = heroFrame; // 0 to 100
+    const scrubX = startX + (t / 100) * graphWidth;
+
+    // 3. Draw horizontal timeline tracks & sparklines
+    metrics.forEach(metric => {
+      ctx.font = '8px monospace';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.fillText(metric.name, startX, metric.y - 12);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(lx, cy);
-      ctx.lineTo(rx, cy);
+      ctx.moveTo(startX, metric.y);
+      ctx.lineTo(endX, metric.y);
       ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(startX, metric.y);
+      for (let x = startX; x <= endX; x++) {
+        const xPercent = ((x - startX) / graphWidth) * 100;
+        const val = metric.fn(xPercent);
+        ctx.lineTo(x, metric.y - val);
+      }
+      ctx.strokeStyle = metric.color;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      const activeVal = metric.fn(t);
+      const activeY = metric.y - activeVal;
+
+      ctx.fillStyle = metric.color;
+      ctx.beginPath();
+      ctx.arc(scrubX, activeY, 3.5, 0, 2 * Math.PI);
+      ctx.fill();
+
+      ctx.strokeStyle = metric.glow;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(scrubX, activeY, 6 + Math.sin(heroFrame * 0.15) * 1.5, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      ctx.font = 'bold 8.5px monospace';
+      ctx.fillStyle = metric.color;
+      let displayValue = "";
+      if (metric.name === "KNEE_EXTENSION") {
+        displayValue = `${Math.round(130 + activeVal * 1.25)}${metric.unit}`;
+      } else if (metric.name === "WRIST_VELOCITY") {
+        displayValue = `${(activeVal * 0.8 + 12).toFixed(1)}${metric.unit}`;
+      } else {
+        displayValue = `${Math.round(activeVal * 1.5 + 5)}${metric.unit}`;
+      }
+      
+      ctx.textAlign = 'right';
+      ctx.fillText(displayValue, endX, metric.y - 12);
+      ctx.textAlign = 'left';
+
+      let isBreached = false;
+      if (metric.name === "KNEE_EXTENSION" && t > 55 && t < 70) {
+        isBreached = true;
+      }
+      if (isBreached) {
+        ctx.font = '7.5px monospace';
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText("⚠️ CRITICAL LOCK", scrubX + 10, activeY - 5);
+      }
     });
 
-    // 3. Draw Stumps (Wickets) at the far end
-    const stumpY = 120;
-    const dy = height - 10 - vpY;
-    const sLx = vpX + (stumpY - vpY) * (130 - vpX) / dy;
-    const sRx = vpX + (stumpY - vpY) * (260 - vpX) / dy;
-    const sCx = (sLx + sRx) / 2; // center of stumps
-    
-    // Draw three vertical wickets
-    ctx.strokeStyle = '#00f0ff'; // Neon Cyan stumps
-    ctx.lineWidth = 2;
-    const stumpSpacing = 4;
-    const stumpHeight = 22;
-    for (let offset = -1; offset <= 1; offset++) {
-      const sx = sCx + offset * stumpSpacing;
+    // 4. Draw timeline ruler at the bottom
+    const rulerY = height - 25;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(startX, rulerY);
+    ctx.lineTo(endX, rulerY);
+    ctx.stroke();
+
+    ctx.font = '7px monospace';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    for (let pct = 0; pct <= 100; pct += 25) {
+      const rx = startX + (pct / 100) * graphWidth;
       ctx.beginPath();
-      ctx.moveTo(sx, stumpY);
-      ctx.lineTo(sx, stumpY - stumpHeight);
+      ctx.moveTo(rx, rulerY);
+      ctx.lineTo(rx, rulerY + 4);
       ctx.stroke();
+      
+      const label = `${(pct / 100 * 0.8).toFixed(1)}s`;
+      ctx.fillText(label, rx - 8, rulerY + 12);
     }
-    // Draw bails
-    ctx.lineWidth = 1.5;
+
+    // 5. Draw glowing vertical scrubber line
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.lineWidth = 1.2;
     ctx.beginPath();
-    ctx.moveTo(sCx - stumpSpacing - 1, stumpY - stumpHeight);
-    ctx.lineTo(sCx + stumpSpacing + 1, stumpY - stumpHeight);
+    ctx.moveTo(scrubX, 35);
+    ctx.lineTo(scrubX, rulerY);
     ctx.stroke();
 
-    // 4. Calculate Ball Trajectory
-    const t = heroFrame;
-    
-    const rX = 250, rY = 60;
-    const bX = 130, bY = 200;
-    const fX = sCx, fY = stumpY - 6;
-
-    let ballX = 0;
-    let ballY = 0;
-
-    // Draw the full trajectory path as a faint glowing line
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.15)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(rX, rY);
-    for (let step = 0; step <= 100; step++) {
-      let px = 0;
-      let py = 0;
-      if (step <= 60) {
-        const u = step / 60;
-        px = rX - u * (rX - bX);
-        py = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
-      } else {
-        const u = (step - 60) / 40;
-        px = bX - u * (bX - fX);
-        py = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
-      }
-      ctx.lineTo(px, py);
-    }
-    ctx.stroke();
-
-    // Calculate current ball coordinates
-    if (t <= 60) {
-      const u = t / 60;
-      ballX = rX - u * (rX - bX);
-      ballY = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
-    } else {
-      const u = (t - 60) / 40;
-      ballX = bX - u * (bX - fX);
-      ballY = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
-    }
-
-    // 5. Draw bounce impact ring (shockwave)
-    if (t > 60) {
-      const age = t - 60;
-      const maxAge = 25;
-      if (age < maxAge) {
-        const alpha = (1 - age / maxAge) * 0.6;
-        ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.ellipse(bX, bY, age * 1.2, age * 0.4, -Math.PI / 12, 0, 2 * Math.PI);
-        ctx.stroke();
-      }
-    }
-
-    // 6. Draw Ball and glowing tails
-    const trailLen = 8;
-    for (let i = 1; i <= trailLen; i++) {
-      const trailT = Math.max(0, t - i * 1.5);
-      let tx = 0, ty = 0;
-      if (trailT <= 60) {
-        const u = trailT / 60;
-        tx = rX - u * (rX - bX);
-        ty = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
-      } else {
-        const u = (trailT - 60) / 40;
-        tx = bX - u * (bX - fX);
-        ty = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
-      }
-      const alpha = (1 - i / trailLen) * 0.35;
-      ctx.fillStyle = `rgba(163, 230, 53, ${alpha})`;
-      ctx.beginPath();
-      ctx.arc(tx, ty, 4 - i * 0.25, 0, 2 * Math.PI);
-      ctx.fill();
-    }
-
-    // Draw active ball
-    ctx.fillStyle = '#a3e635'; // Neon Green
-    ctx.beginPath();
-    ctx.arc(ballX, ballY, 4.5, 0, 2 * Math.PI);
-    ctx.fill();
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(ballX, ballY, 2, 0, 2 * Math.PI);
+    ctx.moveTo(scrubX - 4, 30);
+    ctx.lineTo(scrubX + 4, 30);
+    ctx.lineTo(scrubX, 35);
+    ctx.closePath();
     ctx.fill();
 
-    // 7. Telemetry Vector Callout Box
-    const boxX = ballX + 25;
-    const boxY = ballY - 35;
-    
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(ballX, ballY);
-    ctx.lineTo(boxX - 5, boxY + 12);
-    ctx.stroke();
-
-    ctx.fillStyle = 'rgba(6, 8, 15, 0.85)';
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.2)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(boxX - 5, boxY - 5, 80, 32);
-    ctx.fillRect(boxX - 5, boxY - 5, 80, 32);
-
-    ctx.font = '7.5px monospace';
-    ctx.fillStyle = '#ffffff';
-    ctx.fillText(`VELOCITY: 142.8km/h`, boxX, boxY + 5);
-    ctx.fillStyle = '#a3e635';
-    ctx.fillText(`BOUNCE D: 5.82m`, boxX, boxY + 14);
-    ctx.fillStyle = '#00f0ff';
-    ctx.fillText(`DEVIATN: -1.4°`, boxX, boxY + 23);
-
-    // 8. HUD Info overlays
+    // 6. HUD Header Status details
     ctx.font = '8px monospace';
-    
-    // Top Left: Camera Status
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText("HAWK_EYE: CALIBRATED", 14, 18);
-    ctx.fillStyle = '#00f0ff';
+    ctx.fillText("ENGINE: METRICS_PARSER_ACTIVE", 14, 18);
+    ctx.fillStyle = '#a3e635';
     ctx.beginPath();
     ctx.arc(8, 15, 2, 0, 2 * Math.PI);
     ctx.fill();
 
-    // Top Right: Model Match
+    ctx.textAlign = 'right';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.textAlign = 'right';
-    ctx.fillText("SEAM_ANGLE: +3.2°", width - 10, 18);
-
-    // Bottom Left: FPS
+    ctx.fillText("TIMELINE PLAYBACK", width - 10, 18);
     ctx.textAlign = 'left';
-    ctx.fillText("RELEASE HT: 2.15m", 10, height - 12);
-
-    // Bottom Right: Lock Status
-    ctx.fillStyle = '#a3e635';
-    ctx.textAlign = 'right';
-    ctx.fillText("LINE: GOOD LENGTH", width - 10, height - 12);
-    ctx.textAlign = 'left'; // Reset
 
   }, [heroFrame]);
 
