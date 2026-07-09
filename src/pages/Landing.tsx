@@ -49,106 +49,162 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw skeleton in hero illustration
+  // Draw Biometric Radar Lock in hero illustration
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const width = canvas.width;
+    const height = canvas.height;
+    const cx = width / 2;
+    const cy = height / 2;
+    const maxRadius = Math.min(cx, cy) - 20;
 
-    // Draw background grid lines
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.03)';
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Draw grid background lines
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.02)';
     ctx.lineWidth = 1;
-    for (let i = 0; i < canvas.width; i += 30) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
+    for (let i = 0; i < width; i += 20) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
+    }
 
+    // 2. Draw crosshairs
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.06)';
+    ctx.beginPath();
+    ctx.moveTo(10, cy); ctx.lineTo(width - 10, cy);
+    ctx.moveTo(cx, 10); ctx.lineTo(cx, height - 10);
+    ctx.stroke();
+
+    // 3. Draw concentric radar circles
+    ctx.lineWidth = 1;
+    
+    // Outer circle
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.15)';
+    ctx.beginPath(); ctx.arc(cx, cy, maxRadius, 0, 2 * Math.PI); ctx.stroke();
+    
+    // Middle dotted circle
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.08)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.arc(cx, cy, maxRadius * 0.65, 0, 2 * Math.PI); ctx.stroke();
+    ctx.setLineDash([]); // Reset
+    
+    // Inner solid circle
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.12)';
+    ctx.beginPath(); ctx.arc(cx, cy, maxRadius * 0.35, 0, 2 * Math.PI); ctx.stroke();
+
+    // 4. Draw Radar Sweep (rotating beam)
+    const sweepAngle = (heroFrame / 100) * 2 * Math.PI;
+    
+    // Sweep line
+    const sx = cx + maxRadius * Math.cos(sweepAngle);
+    const sy = cy + maxRadius * Math.sin(sweepAngle);
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(sx, sy);
+    ctx.stroke();
+
+    // Sweep trail
+    const trailStrength = 20;
+    for (let i = 0; i < trailStrength; i++) {
+      const alpha = (1 - i / trailStrength) * 0.10;
+      const arcAngle = sweepAngle - (i * 0.035);
+      ctx.strokeStyle = `rgba(163, 230, 53, ${alpha})`;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + maxRadius * Math.cos(arcAngle), cy + maxRadius * Math.sin(arcAngle));
       ctx.stroke();
     }
 
-    const currentFrame = Math.round(heroFrame);
-    const skeleton = getSkeletalFrame('batting', currentFrame);
-    
-    // Draw bones
-    const drawBone = (j1: any, j2: any, thickness = 3) => {
+    // 5. Draw target lock corners (brackets around the outer circle)
+    const bracketAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
+    ctx.strokeStyle = '#00f0ff'; // Neon Cyan
+    ctx.lineWidth = 2.5;
+    bracketAngles.forEach(ang => {
+      const pulse = Math.sin(heroFrame * 0.1) * 2.5;
+      const radius = maxRadius + 3 + pulse;
+      
       ctx.beginPath();
-      ctx.moveTo(j1.x - 20, j1.y + 10); // slightly offset to fit canvas
-      ctx.lineTo(j2.x - 20, j2.y + 10);
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-      ctx.lineWidth = thickness;
-      ctx.stroke();
-    };
-
-    // Draw spine
-    drawBone(skeleton.head, skeleton.neck, 2.5);
-    drawBone(skeleton.neck, { x: (skeleton.leftShoulder.x + skeleton.rightShoulder.x)/2, y: (skeleton.leftShoulder.y + skeleton.rightShoulder.y)/2 }, 3);
-    
-    // Shoulders
-    drawBone(skeleton.leftShoulder, skeleton.rightShoulder, 3.5);
-    
-    // Arms
-    drawBone(skeleton.leftShoulder, skeleton.leftElbow, 3);
-    drawBone(skeleton.leftElbow, skeleton.leftWrist, 2.5);
-    drawBone(skeleton.rightShoulder, skeleton.rightElbow, 3);
-    drawBone(skeleton.rightElbow, skeleton.rightWrist, 2.5);
-
-    // Hips
-    const hipCenter = { x: (skeleton.leftHip.x + skeleton.rightHip.x) / 2, y: (skeleton.leftHip.y + skeleton.rightHip.y) / 2 };
-    drawBone(skeleton.neck, hipCenter, 3.5);
-    drawBone(skeleton.leftHip, skeleton.rightHip, 3.5);
-
-    // Legs
-    drawBone(skeleton.leftHip, skeleton.leftKnee, 3.5);
-    drawBone(skeleton.leftKnee, skeleton.leftAnkle, 3);
-    drawBone(skeleton.rightHip, skeleton.rightKnee, 3.5);
-    drawBone(skeleton.rightKnee, skeleton.rightAnkle, 3);
-
-    // Draw Bat
-    if (skeleton.batTip) {
-      ctx.beginPath();
-      ctx.moveTo(skeleton.rightWrist.x - 20, skeleton.rightWrist.y + 10);
-      ctx.lineTo(skeleton.batTip.x - 20, skeleton.batTip.y + 10);
-      ctx.strokeStyle = '#d97706';
-      ctx.lineWidth = 6;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(skeleton.rightWrist.x - 18, skeleton.rightWrist.y + 8);
-      ctx.lineTo(skeleton.batTip.x - 18, skeleton.batTip.y + 8);
-      ctx.strokeStyle = '#a3e635'; // neon trace
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-
-    // Draw joints
-    const joints = Object.values(skeleton).filter((j): j is any => j !== undefined);
-    joints.forEach(j => {
-      if (j.name === 'Bat Tip') return;
-      ctx.beginPath();
-      ctx.arc(j.x - 20, j.y + 10, 4, 0, 2 * Math.PI);
-      ctx.fillStyle = '#a3e635';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(j.x - 20, j.y + 10, 7, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'rgba(163, 230, 53, 0.2)';
-      ctx.lineWidth = 1;
+      ctx.arc(cx, cy, radius, ang - 0.15, ang + 0.15);
       ctx.stroke();
     });
 
-    // Draw angles overlay
-    ctx.font = '8px monospace';
+    // 6. Draw glowing tracking nodes
+    // Node A (Green): Knee Brace
+    const nodeA_X = cx - 40;
+    const nodeA_Y = cy + 25;
+    const pulseA = Math.sin(heroFrame * 0.15) * 1.5;
+    ctx.beginPath();
+    ctx.arc(nodeA_X, nodeA_Y, 5 + pulseA, 0, 2 * Math.PI);
+    ctx.fillStyle = '#a3e635'; // Green
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(nodeA_X, nodeA_Y, 9 + pulseA, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.25)';
+    ctx.stroke();
+
+    // Node B (Cyan): Elbow Angle
+    const nodeB_X = cx + 35;
+    const nodeB_Y = cy - 35;
+    const pulseB = Math.cos(heroFrame * 0.12) * 1.5;
+    ctx.beginPath();
+    ctx.arc(nodeB_X, nodeB_Y, 4 + pulseB, 0, 2 * Math.PI);
+    ctx.fillStyle = '#00f0ff'; // Cyan
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(nodeB_X, nodeB_Y, 8 + pulseB, 0, 2 * Math.PI);
+    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+    ctx.stroke();
+
+    // Connect node pins with a dashed vector line
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.setLineDash([2, 3]);
+    ctx.beginPath();
+    ctx.moveTo(nodeA_X, nodeA_Y);
+    ctx.lineTo(nodeB_X, nodeB_Y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw text values next to nodes
+    ctx.font = '7.5px monospace';
     ctx.fillStyle = '#a3e635';
-    ctx.fillText("Angle: 84°", skeleton.rightElbow.x - 5, skeleton.rightElbow.y + 25);
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.15)';
-    ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+    ctx.fillText("KNEE_BRACE: 168°", nodeA_X + 10, nodeA_Y + 3);
+    ctx.fillStyle = '#00f0ff';
+    ctx.fillText("ELBOW_LOCK: 84°", nodeB_X + 10, nodeB_Y + 3);
+
+    // 7. Tech HUD Text Overlays
+    ctx.font = '8px monospace';
+    
+    // Top Left: Camera Status
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.fillText("CAM_01: ACTIVE", 14, 18);
+    ctx.fillStyle = '#a3e635';
+    ctx.beginPath();
+    ctx.arc(8, 15, 2, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Top Right: Model Match
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.textAlign = 'right';
+    ctx.fillText("POSE_INTG: 98.6%", width - 10, 18);
+
+    // Bottom Left: FPS
+    ctx.textAlign = 'left';
+    ctx.fillText("FPS: 120 / SLOW-MO", 10, height - 12);
+
+    // Bottom Right: Lock Status
+    ctx.fillStyle = '#00f0ff';
+    ctx.textAlign = 'right';
+    const isLocked = Math.sin(heroFrame * 0.05) > -0.2;
+    ctx.fillText(isLocked ? "LOCK: SECURE" : "LOCK: CALIBRATING", width - 10, height - 12);
+    ctx.textAlign = 'left'; // Reset
+
   }, [heroFrame]);
 
   // FAQ data
@@ -261,14 +317,9 @@ export default function Landing() {
                 <canvas 
                   ref={heroCanvasRef} 
                   width={300} 
-                  height={280} 
+                  height={300} 
                   className="w-full h-full"
                 />
-                
-                {/* Visual HUD overlays */}
-                <div className="absolute bottom-3 right-3 p-1.5 bg-darkbg-800/90 rounded border border-white/5 font-mono text-[9px] text-slate-400">
-                  Target: 105° Bend
-                </div>
               </div>
             </div>
           </motion.div>
