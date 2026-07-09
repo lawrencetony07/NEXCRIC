@@ -49,7 +49,7 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw Silhouette & AI skeletal Trace in hero illustration
+  // Draw Stance Balance & Posture Heatmap in hero illustration
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -58,199 +58,202 @@ export default function Landing() {
 
     const width = canvas.width;
     const height = canvas.height;
+    const cx = width / 2;
+    const cy = height / 2;
 
     ctx.clearRect(0, 0, width, height);
 
     // 1. Draw grid background lines
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.015)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
     ctx.lineWidth = 1;
     for (let i = 0; i < width; i += 20) {
       ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
     }
 
-    const currentFrame = Math.round(heroFrame);
-    const skeleton = getSkeletalFrame('batting', currentFrame);
+    // 2. Alignment Corridor (Target lines)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 6]);
+    ctx.beginPath();
+    ctx.moveTo(cx - 12, 20); ctx.lineTo(cx - 12, height - 20);
+    ctx.moveTo(cx + 12, 20); ctx.lineTo(cx + 12, height - 20);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // 3. Stance Sway calculation (Simulating weight transfer)
+    const sway = Math.sin(heroFrame * 0.07) * 8.5; // Left-to-right sway
+    const headX = cx + sway;
+    const headY = cy - 65;
+    const neckX = cx + sway * 0.8;
+    const neckY = cy - 45;
+    const hipX = cx + sway * 0.4;
+    const hipY = cy + 15;
     
-    // Scale and offset to fit batsman in canvas center
-    const scale = 0.85;
-    const offsetX = 30;
-    const offsetY = 5;
-    const pt = (j: any) => {
-      if (!j) return { x: 0, y: 0 };
-      return {
-        x: (j.x - 20) * scale + offsetX,
-        y: (j.y + 10) * scale + offsetY
-      };
-    };
+    const lShoulderX = cx - 22 + sway * 0.8, lShoulderY = cy - 40;
+    const rShoulderX = cx + 22 + sway * 0.8, rShoulderY = cy - 40;
+    
+    const lFootX = cx - 35, lFootY = cy + 105;
+    const rFootX = cx + 35, rFootY = cy + 105;
+    
+    const lKneeX = (hipX - 12 + lFootX) / 2 - 8, lKneeY = (hipY + lFootY) / 2;
+    const rKneeX = (hipX + 12 + rFootX) / 2 + 8, rKneeY = (hipY + rFootY) / 2;
 
-    const head = pt(skeleton.head);
-    const neck = pt(skeleton.neck);
-    const lShoulder = pt(skeleton.leftShoulder);
-    const rShoulder = pt(skeleton.rightShoulder);
-    const lElbow = pt(skeleton.leftElbow);
-    const rElbow = pt(skeleton.rightElbow);
-    const lWrist = pt(skeleton.leftWrist);
-    const rWrist = pt(skeleton.rightWrist);
-    const lHip = pt(skeleton.leftHip);
-    const rHip = pt(skeleton.rightHip);
-    const lKnee = pt(skeleton.leftKnee);
-    const rKnee = pt(skeleton.rightKnee);
-    const lAnkle = pt(skeleton.leftAnkle);
-    const rAnkle = pt(skeleton.rightAnkle);
-    const batTip = pt(skeleton.batTip);
+    const lHandX = cx - 8 + sway * 0.6, lHandY = cy + 15;
+    const rHandX = cx + 8 + sway * 0.6, rHandY = cy + 15;
+    const batTipX = cx + 35, batTipY = cy + 105;
 
-    const drawLimbSilhouette = (p1: {x:number,y:number}, p2: {x:number,y:number}, width = 12, color = 'rgba(30, 41, 59, 0.85)') => {
+    // Helper: Draw limb silhouettes
+    const drawLimb = (x1: number, y1: number, x2: number, y2: number, w = 12, color = 'rgba(30, 41, 59, 0.85)') => {
       ctx.beginPath();
       ctx.strokeStyle = color;
-      ctx.lineWidth = width;
+      ctx.lineWidth = w;
       ctx.lineCap = 'round';
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
       ctx.stroke();
     };
 
-    // 2. Draw Bat Silhouette
-    if (batTip && rWrist) {
-      const gripLength = 12;
-      const hAngle = Math.atan2(batTip.y - rWrist.y, batTip.x - rWrist.x);
-      const gripEndX = rWrist.x + gripLength * Math.cos(hAngle);
-      const gripEndY = rWrist.y + gripLength * Math.sin(hAngle);
-      
-      ctx.strokeStyle = '#a3e635'; // Grip
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(rWrist.x, rWrist.y);
-      ctx.lineTo(gripEndX, gripEndY);
-      ctx.stroke();
-
-      ctx.strokeStyle = '#854d0e'; // Blade
-      ctx.lineWidth = 10;
-      ctx.lineCap = 'square';
-      ctx.beginPath();
-      ctx.moveTo(gripEndX, gripEndY);
-      ctx.lineTo(batTip.x, batTip.y);
-      ctx.stroke();
-    }
-
-    // 3. Draw Player Body Silhouette
-    // Left Leg (Front)
-    drawLimbSilhouette(lHip, lKnee, 18, 'rgba(226, 232, 240, 0.8)');
-    drawLimbSilhouette(lKnee, lAnkle, 22, 'rgba(241, 245, 249, 0.95)');
-    ctx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
-    ctx.lineWidth = 2;
+    // 4. Draw Bat (Tapped down near back foot)
+    ctx.strokeStyle = '#854d0e'; // Blade
+    ctx.lineWidth = 8;
+    ctx.lineCap = 'square';
     ctx.beginPath();
-    ctx.moveTo(lKnee.x - 10, lKnee.y); ctx.lineTo(lKnee.x + 10, lKnee.y);
-    ctx.moveTo(lKnee.x - 11, lKnee.y + 4); ctx.lineTo(lKnee.x + 11, lKnee.y + 4);
+    ctx.moveTo(rHandX, rHandY);
+    ctx.lineTo(batTipX, batTipY);
     ctx.stroke();
     
-    // Right Leg (Back)
-    drawLimbSilhouette(rHip, rKnee, 16, 'rgba(100, 116, 139, 0.7)');
-    drawLimbSilhouette(rKnee, rAnkle, 20, 'rgba(203, 213, 225, 0.8)');
+    ctx.strokeStyle = '#a3e635'; // Neon green grip
+    ctx.lineWidth = 3.5;
+    ctx.beginPath();
+    ctx.moveTo(rHandX, rHandY);
+    ctx.lineTo(rHandX - 3, rHandY - 8);
+    ctx.stroke();
+
+    // 5. Draw Trousers & Pads
+    drawLimb(hipX - 10, hipY, lKneeX, lKneeY, 15, 'rgba(226, 232, 240, 0.7)');
+    drawLimb(lKneeX, lKneeY, lFootX, lFootY, 18, 'rgba(241, 245, 249, 0.95)');
     
-    // Torso Shirt
+    drawLimb(hipX + 10, hipY, rKneeX, rKneeY, 15, 'rgba(226, 232, 240, 0.7)');
+    drawLimb(rKneeX, rKneeY, rFootX, rFootY, 18, 'rgba(241, 245, 249, 0.95)');
+
+    // 6. Draw Torso Shirt
     ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
     ctx.beginPath();
-    ctx.moveTo(lShoulder.x, lShoulder.y);
-    ctx.lineTo(rShoulder.x, rShoulder.y);
-    ctx.lineTo(rHip.x, rHip.y);
-    ctx.lineTo(lHip.x, lHip.y);
+    ctx.moveTo(lShoulderX, lShoulderY);
+    ctx.lineTo(rShoulderX, rShoulderY);
+    ctx.lineTo(hipX + 12, hipY);
+    ctx.lineTo(hipX - 12, hipY);
     ctx.closePath();
     ctx.fill();
 
-    // Arms
-    drawLimbSilhouette(rShoulder, rElbow, 12, 'rgba(30, 41, 59, 0.9)');
-    drawLimbSilhouette(rElbow, rWrist, 10, 'rgba(244, 244, 245, 0.85)');
-    drawLimbSilhouette(lShoulder, lElbow, 12, 'rgba(30, 41, 59, 0.9)');
-    drawLimbSilhouette(lElbow, lWrist, 10, 'rgba(244, 244, 245, 0.85)');
+    // 7. Draw Arms
+    drawLimb(lShoulderX, lShoulderY, lHandX, lHandY, 10, 'rgba(30, 41, 59, 0.9)');
+    drawLimb(rShoulderX, rShoulderY, rHandX, rHandY, 10, 'rgba(30, 41, 59, 0.9)');
 
-    // Head / Helmet
-    if (head) {
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      ctx.arc(head.x, head.y, 14, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      ctx.strokeStyle = '#0f172a';
-      ctx.lineWidth = 4;
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.moveTo(head.x - 14, head.y + 2);
-      ctx.lineTo(head.x - 4, head.y + 7);
-      ctx.stroke();
+    // 8. Draw Helmet
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    ctx.arc(headX, headY, 13, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.6)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(headX - 8, headY + 3);
+    ctx.lineTo(headX - 4, headY + 12);
+    ctx.lineTo(headX + 4, headY + 8);
+    ctx.stroke();
 
-      ctx.strokeStyle = 'rgba(148, 163, 184, 0.75)';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(head.x - 10, head.y + 5);
-      ctx.lineTo(head.x - 6, head.y + 16);
-      ctx.lineTo(head.x + 2, head.y + 11);
-      ctx.moveTo(head.x - 8, head.y + 10);
-      ctx.lineTo(head.x, head.y + 8);
-      ctx.stroke();
-    }
+    // 9. Draw Center of Gravity (COG) Plumb Line
+    const headDrift = Math.abs(sway);
+    const isUnstable = headDrift > 6.0;
+    
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = isUnstable ? '#ef4444' : '#00f0ff'; // Red if drifting, Cyan if safe
+    ctx.beginPath();
+    ctx.moveTo(headX, headY);
+    ctx.lineTo(headX, lFootY);
+    ctx.stroke();
 
-    // 4. Draw AI Skeletal Tracker
-    const drawBone = (j1: {x:number,y:number}, j2: {x:number,y:number}) => {
-      ctx.beginPath();
-      ctx.moveTo(j1.x, j1.y);
-      ctx.lineTo(j2.x, j2.y);
-      ctx.strokeStyle = '#a3e635';
-      ctx.lineWidth = 2;
+    // Draw COG ground circle
+    ctx.fillStyle = isUnstable ? 'rgba(239, 68, 68, 0.15)' : 'rgba(0, 240, 255, 0.15)';
+    ctx.beginPath();
+    ctx.ellipse(headX, lFootY, 18, 6, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = isUnstable ? '#ef4444' : '#00f0ff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // 10. AI Bounding Box Overlays
+    ctx.lineWidth = 1;
+    
+    // Head box
+    ctx.strokeStyle = isUnstable ? '#ef4444' : 'rgba(163, 230, 53, 0.3)';
+    ctx.strokeRect(headX - 16, headY - 16, 32, 32);
+    
+    // Feet boxes
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.4)';
+    ctx.strokeRect(lFootX - 14, lFootY - 4, 28, 10);
+    ctx.strokeRect(rFootX - 14, rFootY - 4, 28, 10);
+
+    // 11. Posture Heatmaps (Joint trackers)
+    const drawJoint = (x: number, y: number, color = '#a3e635') => {
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, 2 * Math.PI);
+      ctx.fillStyle = color; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI);
+      ctx.strokeStyle = color === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(163, 230, 53, 0.25)';
       ctx.stroke();
     };
-
-    drawBone(head, neck);
-    drawBone(lShoulder, rShoulder);
-    drawBone(lShoulder, lElbow);
-    drawBone(lElbow, lWrist);
-    drawBone(rShoulder, rElbow);
-    drawBone(rElbow, rWrist);
-    drawBone(neck, { x: (lShoulder.x + rShoulder.x)/2, y: (lShoulder.y + rShoulder.y)/2 });
     
-    const hipCenter = { x: (lHip.x + rHip.x) / 2, y: (lHip.y + rHip.y) / 2 };
-    drawBone(neck, hipCenter);
-    drawBone(lHip, rHip);
-    drawBone(lHip, lKnee);
-    drawBone(lKnee, lAnkle);
-    drawBone(rHip, rKnee);
-    drawBone(rKnee, rAnkle);
+    drawJoint(headX, headY, isUnstable ? '#ef4444' : '#a3e635');
+    drawJoint(lKneeX, lKneeY);
+    drawJoint(rKneeX, rKneeY);
+    drawJoint(lShoulderX, lShoulderY);
+    drawJoint(rShoulderX, rShoulderY);
 
-    const joints = [head, neck, lShoulder, rShoulder, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lKnee, rKnee, lAnkle, rAnkle];
-    joints.forEach(j => {
-      ctx.beginPath();
-      ctx.arc(j.x, j.y, 3.5, 0, 2 * Math.PI);
-      ctx.fillStyle = '#a3e635';
-      ctx.fill();
-      
-      ctx.beginPath();
-      ctx.arc(j.x, j.y, 6.5, 0, 2 * Math.PI);
-      ctx.strokeStyle = 'rgba(163, 230, 53, 0.25)';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-    });
+    // 12. Floating Scorecard & HUD texts
+    const leftWeight = Math.round(50 - sway * 1.5);
+    const rightWeight = 100 - leftWeight;
 
-    // 5. Draw Biomechanical Angle Labels overlay
-    ctx.font = '8px monospace';
-    ctx.fillStyle = '#a3e635';
-    ctx.fillText("ELBOW_LOCK: 84°", lElbow.x + 8, lElbow.y - 4);
-    ctx.fillStyle = '#00f0ff';
-    ctx.fillText("KNEE_ANGLE: 168°", lKnee.x + 8, lKnee.y + 4);
+    // Display weight distribution box
+    ctx.fillStyle = 'rgba(6, 8, 15, 0.85)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.fillRect(cx - 65, height - 42, 130, 20);
+    ctx.strokeRect(cx - 65, height - 42, 130, 20);
 
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.12)';
-    ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+    ctx.font = 'bold 8px monospace';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(`WEIGHT DIST: L ${leftWeight}% | R ${rightWeight}%`, cx, height - 30);
+    ctx.textAlign = 'left';
 
-    // 6. HUD info tags
+    // Warnings if head drifts too far
+    if (isUnstable) {
+      ctx.font = 'bold 8px monospace';
+      ctx.fillStyle = '#ef4444';
+      ctx.fillText("⚠️ HEAD DRIFT: OUT OF ALIGNMENT", 15, height - 52);
+    } else {
+      ctx.font = '8px monospace';
+      ctx.fillStyle = '#00f0ff';
+      ctx.fillText("✓ ALIGNMENT SECURE", 15, height - 52);
+    }
+
+    // Outer framing
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.1)';
+    ctx.strokeRect(5, 5, width - 10, height - 10);
+
+    // Corner HUD Details
     ctx.font = '8px monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText("TRACKING: ACTIVE", 14, 18);
+    ctx.fillText("STANCE_AUDITOR: ACTIVE", 14, 18);
     ctx.fillStyle = '#a3e635';
     ctx.beginPath();
     ctx.arc(8, 15, 2, 0, 2 * Math.PI);
     ctx.fill();
 
     ctx.textAlign = 'right';
-    ctx.fillText("SCANNING_STANCE: DRIVING_POSE", width - 10, 18);
+    ctx.fillStyle = isUnstable ? '#ef4444' : '#a3e635';
+    ctx.fillText(isUnstable ? "ALERT: STABILITY FAIL" : "STATUS: BALANCED", width - 10, 18);
     ctx.textAlign = 'left';
 
   }, [heroFrame]);
