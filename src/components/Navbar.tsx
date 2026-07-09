@@ -114,7 +114,7 @@ export default function Navbar({ theme, toggleTheme }: NavbarProps) {
           <div className="flex items-center space-x-3">
             {isLandingPage && (
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/login')}
                 className="hidden md:flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-all duration-200 shadow-md shadow-cricket-neon/10"
               >
                 <span>Enter Cockpit</span>
@@ -196,7 +196,7 @@ export default function Navbar({ theme, toggleTheme }: NavbarProps) {
               {isLandingPage && (
                 <div className="p-4 border-t border-slate-200/50 dark:border-white/5 mt-2">
                   <button
-                    onClick={() => { setMobileMenuOpen(false); navigate('/dashboard'); }}
+                    onClick={() => { setMobileMenuOpen(false); navigate('/login'); }}
                     className="w-full py-2.5 rounded-xl text-sm font-semibold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-colors flex items-center justify-center space-x-1.5"
                   >
                     <span>Enter Cockpit</span>

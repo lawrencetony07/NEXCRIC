@@ -220,7 +220,7 @@ export default function Landing() {
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4"
             >
               <button
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/login')}
                 className="w-full sm:w-auto flex items-center justify-center space-x-2 px-8 py-3.5 rounded-xl font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 shadow-lg shadow-cricket-neon/15 hover:shadow-cricket-neon/25 transition-all duration-200"
               >
                 <span>Enter Player Cockpit</span>
@@ -575,7 +575,7 @@ export default function Landing() {
 
         <div className="pt-2 flex justify-center">
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/register')}
             className="flex items-center space-x-2 px-8 py-3.5 rounded-xl font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 shadow-lg shadow-cricket-neon/15 hover:shadow-cricket-neon/25 transition-all duration-200"
           >
             <span>Activate Free Account</span>

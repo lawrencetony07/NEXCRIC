@@ -5,6 +5,9 @@ import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Sessions from './pages/Sessions';
 import Analyzer from './pages/Analyzer';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import { mockSessions, Session } from './api/coachingApi';
 
 export default function App() {
@@ -57,6 +60,9 @@ export default function App() {
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/dashboard" element={<Dashboard sessions={sessions} />} />
             <Route path="/sessions" element={<Sessions sessions={sessions} onAddSession={handleAddSession} />} />
             <Route path="/analyzer/:sessionId" element={<Analyzer sessions={sessions} />} />
