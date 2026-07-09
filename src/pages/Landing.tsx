@@ -49,7 +49,7 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw Biometric Radar Lock in hero illustration
+  // Draw Biomechanical Crease & Ball Tracking in hero illustration
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -58,133 +58,190 @@ export default function Landing() {
 
     const width = canvas.width;
     const height = canvas.height;
-    const cx = width / 2;
-    const cy = height / 2;
-    const maxRadius = Math.min(cx, cy) - 20;
 
     ctx.clearRect(0, 0, width, height);
 
     // 1. Draw grid background lines
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.02)';
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.015)';
     ctx.lineWidth = 1;
     for (let i = 0; i < width; i += 20) {
       ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
     }
 
-    // 2. Draw crosshairs
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.06)';
-    ctx.beginPath();
-    ctx.moveTo(10, cy); ctx.lineTo(width - 10, cy);
-    ctx.moveTo(cx, 10); ctx.lineTo(cx, height - 10);
-    ctx.stroke();
-
-    // 3. Draw concentric radar circles
+    // 2. Draw 3D Perspective Pitch Grid
+    // Vanishing point is at (10, 80)
+    const vpX = 10;
+    const vpY = 80;
+    
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
     ctx.lineWidth = 1;
     
-    // Outer circle
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.15)';
-    ctx.beginPath(); ctx.arc(cx, cy, maxRadius, 0, 2 * Math.PI); ctx.stroke();
-    
-    // Middle dotted circle
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.08)';
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath(); ctx.arc(cx, cy, maxRadius * 0.65, 0, 2 * Math.PI); ctx.stroke();
-    ctx.setLineDash([]); // Reset
-    
-    // Inner solid circle
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.12)';
-    ctx.beginPath(); ctx.arc(cx, cy, maxRadius * 0.35, 0, 2 * Math.PI); ctx.stroke();
-
-    // 4. Draw Radar Sweep (rotating beam)
-    const sweepAngle = (heroFrame / 100) * 2 * Math.PI;
-    
-    // Sweep line
-    const sx = cx + maxRadius * Math.cos(sweepAngle);
-    const sy = cy + maxRadius * Math.sin(sweepAngle);
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.5)';
-    ctx.lineWidth = 1.5;
+    // Pitch edges converging to vp
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(sx, sy);
+    ctx.moveTo(vpX, vpY); ctx.lineTo(260, height - 10);
+    ctx.moveTo(vpX, vpY); ctx.lineTo(130, height - 10);
     ctx.stroke();
 
-    // Sweep trail
-    const trailStrength = 20;
-    for (let i = 0; i < trailStrength; i++) {
-      const alpha = (1 - i / trailStrength) * 0.10;
-      const arcAngle = sweepAngle - (i * 0.035);
-      ctx.strokeStyle = `rgba(163, 230, 53, ${alpha})`;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.lineTo(cx + maxRadius * Math.cos(arcAngle), cy + maxRadius * Math.sin(arcAngle));
-      ctx.stroke();
-    }
-
-    // 5. Draw target lock corners (brackets around the outer circle)
-    const bracketAngles = [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4];
-    ctx.strokeStyle = '#00f0ff'; // Neon Cyan
-    ctx.lineWidth = 2.5;
-    bracketAngles.forEach(ang => {
-      const pulse = Math.sin(heroFrame * 0.1) * 2.5;
-      const radius = maxRadius + 3 + pulse;
+    // Crease lines (horizontal lines in perspective)
+    const creaseYCoords = [110, 140, 180, 230, 270];
+    creaseYCoords.forEach(cy => {
+      const dy = height - 10 - vpY;
+      const lx = vpX + (cy - vpY) * (130 - vpX) / dy;
+      const rx = vpX + (cy - vpY) * (260 - vpX) / dy;
       
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.beginPath();
-      ctx.arc(cx, cy, radius, ang - 0.15, ang + 0.15);
+      ctx.moveTo(lx, cy);
+      ctx.lineTo(rx, cy);
       ctx.stroke();
     });
 
-    // 6. Draw glowing tracking nodes
-    // Node A (Green): Knee Brace
-    const nodeA_X = cx - 40;
-    const nodeA_Y = cy + 25;
-    const pulseA = Math.sin(heroFrame * 0.15) * 1.5;
+    // 3. Draw Stumps (Wickets) at the far end
+    const stumpY = 120;
+    const dy = height - 10 - vpY;
+    const sLx = vpX + (stumpY - vpY) * (130 - vpX) / dy;
+    const sRx = vpX + (stumpY - vpY) * (260 - vpX) / dy;
+    const sCx = (sLx + sRx) / 2; // center of stumps
+    
+    // Draw three vertical wickets
+    ctx.strokeStyle = '#00f0ff'; // Neon Cyan stumps
+    ctx.lineWidth = 2;
+    const stumpSpacing = 4;
+    const stumpHeight = 22;
+    for (let offset = -1; offset <= 1; offset++) {
+      const sx = sCx + offset * stumpSpacing;
+      ctx.beginPath();
+      ctx.moveTo(sx, stumpY);
+      ctx.lineTo(sx, stumpY - stumpHeight);
+      ctx.stroke();
+    }
+    // Draw bails
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(nodeA_X, nodeA_Y, 5 + pulseA, 0, 2 * Math.PI);
-    ctx.fillStyle = '#a3e635'; // Green
+    ctx.moveTo(sCx - stumpSpacing - 1, stumpY - stumpHeight);
+    ctx.lineTo(sCx + stumpSpacing + 1, stumpY - stumpHeight);
+    ctx.stroke();
+
+    // 4. Calculate Ball Trajectory
+    const t = heroFrame;
+    
+    const rX = 250, rY = 60;
+    const bX = 130, bY = 200;
+    const fX = sCx, fY = stumpY - 6;
+
+    let ballX = 0;
+    let ballY = 0;
+
+    // Draw the full trajectory path as a faint glowing line
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(rX, rY);
+    for (let step = 0; step <= 100; step++) {
+      let px = 0;
+      let py = 0;
+      if (step <= 60) {
+        const u = step / 60;
+        px = rX - u * (rX - bX);
+        py = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
+      } else {
+        const u = (step - 60) / 40;
+        px = bX - u * (bX - fX);
+        py = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
+      }
+      ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Calculate current ball coordinates
+    if (t <= 60) {
+      const u = t / 60;
+      ballX = rX - u * (rX - bX);
+      ballY = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
+    } else {
+      const u = (t - 60) / 40;
+      ballX = bX - u * (bX - fX);
+      ballY = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
+    }
+
+    // 5. Draw bounce impact ring (shockwave)
+    if (t > 60) {
+      const age = t - 60;
+      const maxAge = 25;
+      if (age < maxAge) {
+        const alpha = (1 - age / maxAge) * 0.6;
+        ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(bX, bY, age * 1.2, age * 0.4, -Math.PI / 12, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
+
+    // 6. Draw Ball and glowing tails
+    const trailLen = 8;
+    for (let i = 1; i <= trailLen; i++) {
+      const trailT = Math.max(0, t - i * 1.5);
+      let tx = 0, ty = 0;
+      if (trailT <= 60) {
+        const u = trailT / 60;
+        tx = rX - u * (rX - bX);
+        ty = rY + u * (bY - rY) - 35 * Math.sin(Math.PI * u);
+      } else {
+        const u = (trailT - 60) / 40;
+        tx = bX - u * (bX - fX);
+        ty = bY - u * (bY - fY) - 15 * Math.sin(Math.PI * u);
+      }
+      const alpha = (1 - i / trailLen) * 0.35;
+      ctx.fillStyle = `rgba(163, 230, 53, ${alpha})`;
+      ctx.beginPath();
+      ctx.arc(tx, ty, 4 - i * 0.25, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    // Draw active ball
+    ctx.fillStyle = '#a3e635'; // Neon Green
+    ctx.beginPath();
+    ctx.arc(ballX, ballY, 4.5, 0, 2 * Math.PI);
     ctx.fill();
+    ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(nodeA_X, nodeA_Y, 9 + pulseA, 0, 2 * Math.PI);
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.25)';
-    ctx.stroke();
-
-    // Node B (Cyan): Elbow Angle
-    const nodeB_X = cx + 35;
-    const nodeB_Y = cy - 35;
-    const pulseB = Math.cos(heroFrame * 0.12) * 1.5;
-    ctx.beginPath();
-    ctx.arc(nodeB_X, nodeB_Y, 4 + pulseB, 0, 2 * Math.PI);
-    ctx.fillStyle = '#00f0ff'; // Cyan
+    ctx.arc(ballX, ballY, 2, 0, 2 * Math.PI);
     ctx.fill();
+
+    // 7. Telemetry Vector Callout Box
+    const boxX = ballX + 25;
+    const boxY = ballY - 35;
+    
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.arc(nodeB_X, nodeB_Y, 8 + pulseB, 0, 2 * Math.PI);
-    ctx.strokeStyle = 'rgba(0, 240, 255, 0.25)';
+    ctx.moveTo(ballX, ballY);
+    ctx.lineTo(boxX - 5, boxY + 12);
     ctx.stroke();
 
-    // Connect node pins with a dashed vector line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-    ctx.setLineDash([2, 3]);
-    ctx.beginPath();
-    ctx.moveTo(nodeA_X, nodeA_Y);
-    ctx.lineTo(nodeB_X, nodeB_Y);
-    ctx.stroke();
-    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(6, 8, 15, 0.85)';
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(boxX - 5, boxY - 5, 80, 32);
+    ctx.fillRect(boxX - 5, boxY - 5, 80, 32);
 
-    // Draw text values next to nodes
     ctx.font = '7.5px monospace';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(`VELOCITY: 142.8km/h`, boxX, boxY + 5);
     ctx.fillStyle = '#a3e635';
-    ctx.fillText("KNEE_BRACE: 168°", nodeA_X + 10, nodeA_Y + 3);
+    ctx.fillText(`BOUNCE D: 5.82m`, boxX, boxY + 14);
     ctx.fillStyle = '#00f0ff';
-    ctx.fillText("ELBOW_LOCK: 84°", nodeB_X + 10, nodeB_Y + 3);
+    ctx.fillText(`DEVIATN: -1.4°`, boxX, boxY + 23);
 
-    // 7. Tech HUD Text Overlays
+    // 8. HUD Info overlays
     ctx.font = '8px monospace';
     
     // Top Left: Camera Status
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText("CAM_01: ACTIVE", 14, 18);
-    ctx.fillStyle = '#a3e635';
+    ctx.fillText("HAWK_EYE: CALIBRATED", 14, 18);
+    ctx.fillStyle = '#00f0ff';
     ctx.beginPath();
     ctx.arc(8, 15, 2, 0, 2 * Math.PI);
     ctx.fill();
@@ -192,17 +249,16 @@ export default function Landing() {
     // Top Right: Model Match
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.textAlign = 'right';
-    ctx.fillText("POSE_INTG: 98.6%", width - 10, 18);
+    ctx.fillText("SEAM_ANGLE: +3.2°", width - 10, 18);
 
     // Bottom Left: FPS
     ctx.textAlign = 'left';
-    ctx.fillText("FPS: 120 / SLOW-MO", 10, height - 12);
+    ctx.fillText("RELEASE HT: 2.15m", 10, height - 12);
 
     // Bottom Right: Lock Status
-    ctx.fillStyle = '#00f0ff';
+    ctx.fillStyle = '#a3e635';
     ctx.textAlign = 'right';
-    const isLocked = Math.sin(heroFrame * 0.05) > -0.2;
-    ctx.fillText(isLocked ? "LOCK: SECURE" : "LOCK: CALIBRATING", width - 10, height - 12);
+    ctx.fillText("LINE: GOOD LENGTH", width - 10, height - 12);
     ctx.textAlign = 'left'; // Reset
 
   }, [heroFrame]);
