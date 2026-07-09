@@ -49,7 +49,7 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw Biomechanical Metrics Equalizer in hero illustration
+  // Draw Silhouette & AI skeletal Trace in hero illustration
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -61,179 +61,196 @@ export default function Landing() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // 1. Draw background grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+    // 1. Draw grid background lines
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.015)';
     ctx.lineWidth = 1;
     for (let i = 0; i < width; i += 20) {
       ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(width, i); ctx.stroke();
     }
 
-    // 2. Define the metrics parameters
-    const metrics = [
-      {
-        name: "HIP_ROTATION",
-        color: "#00f0ff", // Neon Cyan
-        glow: "rgba(0, 240, 255, 0.2)",
-        y: 65,
-        fn: (xPercent: number) => {
-          return 15 + 30 * Math.exp(-Math.pow((xPercent - 65) / 12, 2));
-        },
-        unit: "°"
-      },
-      {
-        name: "KNEE_EXTENSION",
-        color: "#a3e635", // Neon Green
-        glow: "rgba(163, 230, 53, 0.2)",
-        y: 115,
-        fn: (xPercent: number) => {
-          return 35 - 25 / (1 + Math.exp(-(xPercent - 60) / 4));
-        },
-        unit: "°"
-      },
-      {
-        name: "SHOULDER_TILT",
-        color: "#c084fc", // Neon Purple
-        glow: "rgba(192, 132, 252, 0.2)",
-        y: 165,
-        fn: (xPercent: number) => {
-          return 20 + 15 * Math.sin((xPercent * Math.PI) / 80 - 0.2);
-        },
-        unit: "°"
-      },
-      {
-        name: "WRIST_VELOCITY",
-        color: "#fbbf24", // Amber
-        glow: "rgba(251, 191, 36, 0.2)",
-        y: 215,
-        fn: (xPercent: number) => {
-          return 5 + 40 * Math.exp(-Math.pow((xPercent - 68) / 8, 2));
-        },
-        unit: " m/s"
-      }
-    ];
+    const currentFrame = Math.round(heroFrame);
+    const skeleton = getSkeletalFrame('batting', currentFrame);
+    
+    // Scale and offset to fit batsman in canvas center
+    const scale = 0.85;
+    const offsetX = 30;
+    const offsetY = 5;
+    const pt = (j: any) => {
+      if (!j) return { x: 0, y: 0 };
+      return {
+        x: (j.x - 20) * scale + offsetX,
+        y: (j.y + 10) * scale + offsetY
+      };
+    };
 
-    const startX = 35;
-    const endX = width - 25;
-    const graphWidth = endX - startX;
+    const head = pt(skeleton.head);
+    const neck = pt(skeleton.neck);
+    const lShoulder = pt(skeleton.leftShoulder);
+    const rShoulder = pt(skeleton.rightShoulder);
+    const lElbow = pt(skeleton.leftElbow);
+    const rElbow = pt(skeleton.rightElbow);
+    const lWrist = pt(skeleton.leftWrist);
+    const rWrist = pt(skeleton.rightWrist);
+    const lHip = pt(skeleton.leftHip);
+    const rHip = pt(skeleton.rightHip);
+    const lKnee = pt(skeleton.leftKnee);
+    const rKnee = pt(skeleton.rightKnee);
+    const lAnkle = pt(skeleton.leftAnkle);
+    const rAnkle = pt(skeleton.rightAnkle);
+    const batTip = pt(skeleton.batTip);
 
-    const t = heroFrame; // 0 to 100
-    const scrubX = startX + (t / 100) * graphWidth;
-
-    // 3. Draw horizontal timeline tracks & sparklines
-    metrics.forEach(metric => {
-      ctx.font = '8px monospace';
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-      ctx.fillText(metric.name, startX, metric.y - 12);
-
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-      ctx.lineWidth = 1;
+    const drawLimbSilhouette = (p1: {x:number,y:number}, p2: {x:number,y:number}, width = 12, color = 'rgba(30, 41, 59, 0.85)') => {
       ctx.beginPath();
-      ctx.moveTo(startX, metric.y);
-      ctx.lineTo(endX, metric.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.moveTo(p1.x, p1.y);
+      ctx.lineTo(p2.x, p2.y);
       ctx.stroke();
+    };
 
-      ctx.beginPath();
-      ctx.moveTo(startX, metric.y);
-      for (let x = startX; x <= endX; x++) {
-        const xPercent = ((x - startX) / graphWidth) * 100;
-        const val = metric.fn(xPercent);
-        ctx.lineTo(x, metric.y - val);
-      }
-      ctx.strokeStyle = metric.color;
-      ctx.lineWidth = 1.8;
-      ctx.stroke();
-
-      const activeVal = metric.fn(t);
-      const activeY = metric.y - activeVal;
-
-      ctx.fillStyle = metric.color;
-      ctx.beginPath();
-      ctx.arc(scrubX, activeY, 3.5, 0, 2 * Math.PI);
-      ctx.fill();
-
-      ctx.strokeStyle = metric.glow;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.arc(scrubX, activeY, 6 + Math.sin(heroFrame * 0.15) * 1.5, 0, 2 * Math.PI);
-      ctx.stroke();
-
-      ctx.font = 'bold 8.5px monospace';
-      ctx.fillStyle = metric.color;
-      let displayValue = "";
-      if (metric.name === "KNEE_EXTENSION") {
-        displayValue = `${Math.round(130 + activeVal * 1.25)}${metric.unit}`;
-      } else if (metric.name === "WRIST_VELOCITY") {
-        displayValue = `${(activeVal * 0.8 + 12).toFixed(1)}${metric.unit}`;
-      } else {
-        displayValue = `${Math.round(activeVal * 1.5 + 5)}${metric.unit}`;
-      }
+    // 2. Draw Bat Silhouette
+    if (batTip && rWrist) {
+      const gripLength = 12;
+      const hAngle = Math.atan2(batTip.y - rWrist.y, batTip.x - rWrist.x);
+      const gripEndX = rWrist.x + gripLength * Math.cos(hAngle);
+      const gripEndY = rWrist.y + gripLength * Math.sin(hAngle);
       
-      ctx.textAlign = 'right';
-      ctx.fillText(displayValue, endX, metric.y - 12);
-      ctx.textAlign = 'left';
-
-      let isBreached = false;
-      if (metric.name === "KNEE_EXTENSION" && t > 55 && t < 70) {
-        isBreached = true;
-      }
-      if (isBreached) {
-        ctx.font = '7.5px monospace';
-        ctx.fillStyle = '#ef4444';
-        ctx.fillText("⚠️ CRITICAL LOCK", scrubX + 10, activeY - 5);
-      }
-    });
-
-    // 4. Draw timeline ruler at the bottom
-    const rulerY = height - 25;
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(startX, rulerY);
-    ctx.lineTo(endX, rulerY);
-    ctx.stroke();
-
-    ctx.font = '7px monospace';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    for (let pct = 0; pct <= 100; pct += 25) {
-      const rx = startX + (pct / 100) * graphWidth;
+      ctx.strokeStyle = '#a3e635'; // Grip
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(rx, rulerY);
-      ctx.lineTo(rx, rulerY + 4);
+      ctx.moveTo(rWrist.x, rWrist.y);
+      ctx.lineTo(gripEndX, gripEndY);
       ctx.stroke();
-      
-      const label = `${(pct / 100 * 0.8).toFixed(1)}s`;
-      ctx.fillText(label, rx - 8, rulerY + 12);
+
+      ctx.strokeStyle = '#854d0e'; // Blade
+      ctx.lineWidth = 10;
+      ctx.lineCap = 'square';
+      ctx.beginPath();
+      ctx.moveTo(gripEndX, gripEndY);
+      ctx.lineTo(batTip.x, batTip.y);
+      ctx.stroke();
     }
 
-    // 5. Draw glowing vertical scrubber line
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-    ctx.lineWidth = 1.2;
+    // 3. Draw Player Body Silhouette
+    // Left Leg (Front)
+    drawLimbSilhouette(lHip, lKnee, 18, 'rgba(226, 232, 240, 0.8)');
+    drawLimbSilhouette(lKnee, lAnkle, 22, 'rgba(241, 245, 249, 0.95)');
+    ctx.strokeStyle = 'rgba(15, 23, 42, 0.15)';
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(scrubX, 35);
-    ctx.lineTo(scrubX, rulerY);
+    ctx.moveTo(lKnee.x - 10, lKnee.y); ctx.lineTo(lKnee.x + 10, lKnee.y);
+    ctx.moveTo(lKnee.x - 11, lKnee.y + 4); ctx.lineTo(lKnee.x + 11, lKnee.y + 4);
     ctx.stroke();
-
-    ctx.fillStyle = '#ffffff';
+    
+    // Right Leg (Back)
+    drawLimbSilhouette(rHip, rKnee, 16, 'rgba(100, 116, 139, 0.7)');
+    drawLimbSilhouette(rKnee, rAnkle, 20, 'rgba(203, 213, 225, 0.8)');
+    
+    // Torso Shirt
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
     ctx.beginPath();
-    ctx.moveTo(scrubX - 4, 30);
-    ctx.lineTo(scrubX + 4, 30);
-    ctx.lineTo(scrubX, 35);
+    ctx.moveTo(lShoulder.x, lShoulder.y);
+    ctx.lineTo(rShoulder.x, rShoulder.y);
+    ctx.lineTo(rHip.x, rHip.y);
+    ctx.lineTo(lHip.x, lHip.y);
     ctx.closePath();
     ctx.fill();
 
-    // 6. HUD Header Status details
+    // Arms
+    drawLimbSilhouette(rShoulder, rElbow, 12, 'rgba(30, 41, 59, 0.9)');
+    drawLimbSilhouette(rElbow, rWrist, 10, 'rgba(244, 244, 245, 0.85)');
+    drawLimbSilhouette(lShoulder, lElbow, 12, 'rgba(30, 41, 59, 0.9)');
+    drawLimbSilhouette(lElbow, lWrist, 10, 'rgba(244, 244, 245, 0.85)');
+
+    // Head / Helmet
+    if (head) {
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(head.x, head.y, 14, 0, 2 * Math.PI);
+      ctx.fill();
+      
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 4;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(head.x - 14, head.y + 2);
+      ctx.lineTo(head.x - 4, head.y + 7);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.75)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(head.x - 10, head.y + 5);
+      ctx.lineTo(head.x - 6, head.y + 16);
+      ctx.lineTo(head.x + 2, head.y + 11);
+      ctx.moveTo(head.x - 8, head.y + 10);
+      ctx.lineTo(head.x, head.y + 8);
+      ctx.stroke();
+    }
+
+    // 4. Draw AI Skeletal Tracker
+    const drawBone = (j1: {x:number,y:number}, j2: {x:number,y:number}) => {
+      ctx.beginPath();
+      ctx.moveTo(j1.x, j1.y);
+      ctx.lineTo(j2.x, j2.y);
+      ctx.strokeStyle = '#a3e635';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    };
+
+    drawBone(head, neck);
+    drawBone(lShoulder, rShoulder);
+    drawBone(lShoulder, lElbow);
+    drawBone(lElbow, lWrist);
+    drawBone(rShoulder, rElbow);
+    drawBone(rElbow, rWrist);
+    drawBone(neck, { x: (lShoulder.x + rShoulder.x)/2, y: (lShoulder.y + rShoulder.y)/2 });
+    
+    const hipCenter = { x: (lHip.x + rHip.x) / 2, y: (lHip.y + rHip.y) / 2 };
+    drawBone(neck, hipCenter);
+    drawBone(lHip, rHip);
+    drawBone(lHip, lKnee);
+    drawBone(lKnee, lAnkle);
+    drawBone(rHip, rKnee);
+    drawBone(rKnee, rAnkle);
+
+    const joints = [head, neck, lShoulder, rShoulder, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lKnee, rKnee, lAnkle, rAnkle];
+    joints.forEach(j => {
+      ctx.beginPath();
+      ctx.arc(j.x, j.y, 3.5, 0, 2 * Math.PI);
+      ctx.fillStyle = '#a3e635';
+      ctx.fill();
+      
+      ctx.beginPath();
+      ctx.arc(j.x, j.y, 6.5, 0, 2 * Math.PI);
+      ctx.strokeStyle = 'rgba(163, 230, 53, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // 5. Draw Biomechanical Angle Labels overlay
+    ctx.font = '8px monospace';
+    ctx.fillStyle = '#a3e635';
+    ctx.fillText("ELBOW_LOCK: 84°", lElbow.x + 8, lElbow.y - 4);
+    ctx.fillStyle = '#00f0ff';
+    ctx.fillText("KNEE_ANGLE: 168°", lKnee.x + 8, lKnee.y + 4);
+
+    ctx.strokeStyle = 'rgba(163, 230, 53, 0.12)';
+    ctx.strokeRect(5, 5, canvas.width - 10, canvas.height - 10);
+
+    // 6. HUD info tags
     ctx.font = '8px monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText("ENGINE: METRICS_PARSER_ACTIVE", 14, 18);
+    ctx.fillText("TRACKING: ACTIVE", 14, 18);
     ctx.fillStyle = '#a3e635';
     ctx.beginPath();
     ctx.arc(8, 15, 2, 0, 2 * Math.PI);
     ctx.fill();
 
     ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText("TIMELINE PLAYBACK", width - 10, 18);
+    ctx.fillText("SCANNING_STANCE: DRIVING_POSE", width - 10, 18);
     ctx.textAlign = 'left';
 
   }, [heroFrame]);
