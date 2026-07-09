@@ -72,7 +72,7 @@ export default function ForgotPassword() {
                       placeholder="you@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className={`w-full pl-10.5 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 ${
+                      className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 ${
                         emailError ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 dark:border-white/5'
                       }`}
                     />

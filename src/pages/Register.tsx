@@ -122,7 +122,7 @@ export default function Register() {
                 placeholder="Virat Kohli"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full pl-10.5 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200"
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200"
               />
             </div>
           </div>
@@ -137,7 +137,7 @@ export default function Register() {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full pl-10.5 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
                   emailError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-slate-200 dark:border-white/5'
                 }`}
               />
@@ -159,7 +159,7 @@ export default function Register() {
                 placeholder="Minimum 8 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full pl-10.5 pr-10 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
+                className={`w-full pl-10 pr-10 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
                   passwordError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-slate-200 dark:border-white/5'
                 }`}
               />
@@ -209,7 +209,7 @@ export default function Register() {
                 placeholder="Confirm password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={`w-full pl-10.5 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
+                className={`w-full pl-10 pr-4 py-3 rounded-xl border bg-slate-50/50 dark:bg-white/5 dark:text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-1 focus:ring-cricket-cyan focus:border-cricket-cyan transition-all duration-200 ${
                   confirmError ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : 'border-slate-200 dark:border-white/5'
                 }`}
               />
