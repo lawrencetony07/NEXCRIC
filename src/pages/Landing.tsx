@@ -10,26 +10,17 @@ import {
   TrendingUp, 
   Play, 
   CheckCircle2, 
-  Plus, 
-  Minus,
-  Sparkles,
   ChevronDown,
   Quote,
   Target,
   ShieldCheck,
   Video
 } from 'lucide-react';
-import { getSkeletalFrame, Skeleton } from '../api/coachingApi';
-
 
 export default function Landing() {
   const navigate = useNavigate();
-  
-  // Skeletal simulation states for Hero illustration
   const [heroFrame, setHeroFrame] = useState(0);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // FAQ state
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   // Play animation loop in hero
@@ -49,7 +40,7 @@ export default function Landing() {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
-  // Draw Stance Balance & Posture Heatmap in hero illustration
+  // Draw Stance Balance & Posture Heatmap
   useEffect(() => {
     const canvas = heroCanvasRef.current;
     if (!canvas) return;
@@ -114,8 +105,8 @@ export default function Landing() {
       ctx.stroke();
     };
 
-    // 4. Draw Bat (Tapped down near back foot)
-    ctx.strokeStyle = '#854d0e'; // Blade
+    // 4. Draw Bat (Willow gold blade)
+    ctx.strokeStyle = '#d97706'; // Blade
     ctx.lineWidth = 8;
     ctx.lineCap = 'square';
     ctx.beginPath();
@@ -123,7 +114,7 @@ export default function Landing() {
     ctx.lineTo(batTipX, batTipY);
     ctx.stroke();
     
-    ctx.strokeStyle = '#a3e635'; // Neon green grip
+    ctx.strokeStyle = '#10b981'; // Turf green grip
     ctx.lineWidth = 3.5;
     ctx.beginPath();
     ctx.moveTo(rHandX, rHandY);
@@ -152,7 +143,7 @@ export default function Landing() {
     drawLimb(rShoulderX, rShoulderY, rHandX, rHandY, 10, 'rgba(30, 41, 59, 0.9)');
 
     // 8. Draw Helmet
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#0c1524';
     ctx.beginPath();
     ctx.arc(headX, headY, 13, 0, 2 * Math.PI);
     ctx.fill();
@@ -186,37 +177,32 @@ export default function Landing() {
 
     // 10. AI Bounding Box Overlays
     ctx.lineWidth = 1;
-    
-    // Head box
-    ctx.strokeStyle = isUnstable ? '#ef4444' : 'rgba(163, 230, 53, 0.3)';
+    ctx.strokeStyle = isUnstable ? '#ef4444' : 'rgba(16, 185, 129, 0.3)';
     ctx.strokeRect(headX - 16, headY - 16, 32, 32);
-    
-    // Feet boxes
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.4)';
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
     ctx.strokeRect(lFootX - 14, lFootY - 4, 28, 10);
     ctx.strokeRect(rFootX - 14, rFootY - 4, 28, 10);
 
-    // 11. Posture Heatmaps (Joint trackers)
-    const drawJoint = (x: number, y: number, color = '#a3e635') => {
+    // 11. Posture Heatmaps
+    const drawJoint = (x: number, y: number, color = '#10b981') => {
       ctx.beginPath(); ctx.arc(x, y, 3, 0, 2 * Math.PI);
       ctx.fillStyle = color; ctx.fill();
       ctx.beginPath(); ctx.arc(x, y, 6, 0, 2 * Math.PI);
-      ctx.strokeStyle = color === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(163, 230, 53, 0.25)';
+      ctx.strokeStyle = color === '#ef4444' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)';
       ctx.stroke();
     };
     
-    drawJoint(headX, headY, isUnstable ? '#ef4444' : '#a3e635');
+    drawJoint(headX, headY, isUnstable ? '#ef4444' : '#10b981');
     drawJoint(lKneeX, lKneeY);
     drawJoint(rKneeX, rKneeY);
     drawJoint(lShoulderX, lShoulderY);
     drawJoint(rShoulderX, rShoulderY);
 
-    // 12. Floating Scorecard & HUD texts
+    // 12. Scorecard Calculations
     const leftWeight = Math.round(50 - sway * 1.5);
     const rightWeight = 100 - leftWeight;
 
-    // Display weight distribution box
-    ctx.fillStyle = 'rgba(6, 8, 15, 0.85)';
+    ctx.fillStyle = 'rgba(7, 9, 14, 0.85)';
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
     ctx.fillRect(cx - 65, height - 42, 130, 20);
     ctx.strokeRect(cx - 65, height - 42, 130, 20);
@@ -227,7 +213,6 @@ export default function Landing() {
     ctx.fillText(`WEIGHT DIST: L ${leftWeight}% | R ${rightWeight}%`, cx, height - 30);
     ctx.textAlign = 'left';
 
-    // Warnings if head drifts too far
     if (isUnstable) {
       ctx.font = 'bold 8px monospace';
       ctx.fillStyle = '#ef4444';
@@ -238,31 +223,27 @@ export default function Landing() {
       ctx.fillText("✓ ALIGNMENT SECURE", 15, height - 52);
     }
 
-    // Outer framing
-    ctx.strokeStyle = 'rgba(163, 230, 53, 0.1)';
+    ctx.strokeStyle = 'rgba(16, 185, 129, 0.1)';
     ctx.strokeRect(5, 5, width - 10, height - 10);
 
-    // Corner HUD Details
     ctx.font = '8px monospace';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.fillText("STANCE_AUDITOR: ACTIVE", 14, 18);
-    ctx.fillStyle = '#a3e635';
+    ctx.fillStyle = '#10b981';
     ctx.beginPath();
     ctx.arc(8, 15, 2, 0, 2 * Math.PI);
     ctx.fill();
 
     ctx.textAlign = 'right';
-    ctx.fillStyle = isUnstable ? '#ef4444' : '#a3e635';
+    ctx.fillStyle = isUnstable ? '#ef4444' : '#10b981';
     ctx.fillText(isUnstable ? "ALERT: STABILITY FAIL" : "STATUS: BALANCED", width - 10, 18);
     ctx.textAlign = 'left';
-
   }, [heroFrame]);
 
-  // FAQ data
   const faqs = [
     {
       q: "How does the AI analyze my technique?",
-      a: "Our system uses advanced computer vision pose estimation models (similar to OpenPose and MediaPipe) to track 14 key body joints in your batting or bowling video. It computes your relative joint angles (e.g. elbow extension, knee brace) frame-by-frame and compares them against optimized biomechanical limits."
+      a: "Our system uses advanced computer vision pose estimation models to track 14 key body joints in your batting or bowling video. It computes your relative joint angles frame-by-frame and compares them against optimized biomechanical limits."
     },
     {
       q: "Do I need special sensors or cameras?",
@@ -279,27 +260,25 @@ export default function Landing() {
   ];
 
   return (
-    <div className="space-y-24 pb-16">
-      
-      {/* 2. Hero Section */}
-      <section className="relative pt-12 md:pt-20 overflow-hidden">
-        {/* Decorative background glows */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-cricket-neon/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute top-1/3 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-cricket-cyan/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div className="space-y-24 pb-16 relative turf-grid-pattern">
+      {/* Stadium Spotlight Beams */}
+      <div className="absolute top-0 left-0 right-0 h-[600px] stadium-beam-left pointer-events-none z-0"></div>
+      <div className="absolute top-0 left-0 right-0 h-[600px] stadium-beam-right pointer-events-none z-0"></div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
-          {/* Hero text (7/12 width) */}
+      {/* Hero Section */}
+      <section className="relative pt-12 md:pt-20 overflow-hidden z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          {/* Copy Area (7/12 width) */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            
-            {/* Startup Funding badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4 }}
-              className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-cricket-neon/20 bg-cricket-neon/10 text-cricket-neon text-[11px] font-black uppercase tracking-widest"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center space-x-2 px-3 py-1 rounded-full border border-green-500/20 bg-green-500/5 text-cricket-neon text-xs font-bold"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Announcing $4.2M Seed Round to Build Cricket's Brain</span>
+              <Target className="w-3.5 h-3.5" />
+              <span>Next-Gen Biomechanical Analysis</span>
             </motion.div>
 
             <motion.h1
@@ -315,7 +294,7 @@ export default function Landing() {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-base sm:text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
+              className="text-base sm:text-lg text-slate-550 dark:text-slate-405 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
             >
               Upload your batting or bowling clips. CricVerse extracts skeletal joint data, audits your form in slow-mo, and delivers instant technique scores. Built like Vercel, tuned like a pro.
             </motion.p>
@@ -342,23 +321,22 @@ export default function Landing() {
                 <span>Try Instant Upload</span>
               </button>
             </motion.div>
-
           </div>
 
-          {/* Hero visual widget (5/12 width) */}
+          {/* Hero Visual Widget (5/12 width) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-5 flex justify-center"
           >
-            <div className="relative w-full max-w-[360px] p-5 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-2xl overflow-hidden group">
+            <div className="relative w-full max-w-[360px] p-5 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700/80 backdrop-blur-xl shadow-2xl overflow-hidden group glow-border-green">
               <div className="absolute inset-0 bg-gradient-to-tr from-cricket-neon/5 via-transparent to-transparent opacity-50"></div>
               
               {/* Header HUD */}
               <div className="flex justify-between items-center mb-4">
                 <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                  Live Engine Simulator
+                  Live Stance Auditor
                 </span>
                 <span className="w-2.5 h-2.5 rounded-full bg-cricket-neon animate-ping"></span>
               </div>
@@ -377,8 +355,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 3. AI Coach Features */}
-      <section id="features" className="space-y-12">
+      {/* AI Coach Features */}
+      <section id="features" className="space-y-12 relative z-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <h2 className="text-xs font-black tracking-widest text-cricket-neon uppercase">
             Platform Capabilities
@@ -400,8 +378,8 @@ export default function Landing() {
             <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-neon transition-colors">
               Skeletal Pose Tracking
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-              Maps 14 biometric joint markers recursively. Tracks wrists, hips, elbows, and knees to map structural balance.
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Extracts 14 core biomechanical joint coordinates in 2D vector layouts automatically from regular mobile videos.
             </p>
           </div>
 
@@ -411,127 +389,57 @@ export default function Landing() {
               <Activity className="w-5 h-5" />
             </div>
             <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-cyan transition-colors">
-              Joint Flexion Metrics
+              Angle & Force Analytics
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-              Calculates joint angles at setup, backswing, contact, and follow-through. Audits stance collapse in slow-motion.
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Calculates lead elbow extension, knee brace angle, head alignment, and hip opening angles frame-by-frame.
             </p>
           </div>
 
           {/* Card 3 */}
           <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-orange/20 transition-all duration-300 group">
             <div className="w-10 h-10 rounded-xl bg-cricket-orange/10 text-cricket-orange flex items-center justify-center mb-4">
-              <Target className="w-5 h-5" />
+              <Users className="w-5 h-5" />
             </div>
             <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-orange transition-colors">
-              Elite Comparisons
+              Pro Technique Matching
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-              Compares your posture overlays frame-by-frame with professional batting and bowling benchmarks.
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Superimpose your skeleton model directly onto optimized benchmark structures of elite international cricketers.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 4. How It Works */}
-      <section id="how-it-works" className="space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <h2 className="text-xs font-black tracking-widest text-cricket-cyan uppercase">
-            The Workflow
-          </h2>
-          <h3 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Diagnose Form In 4 Simple Steps
-          </h3>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-          {/* Step 1 */}
-          <div className="space-y-3 relative p-4 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
-            <span className="text-4xl font-black text-cricket-neon/20 dark:text-white/5 font-mono">01</span>
-            <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Record Clip</h4>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Record a batting drive or bowling release on your phone (ideally side-on and at 60 FPS).
-            </p>
-          </div>
-
-          {/* Step 2 */}
-          <div className="space-y-3 relative p-4 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
-            <span className="text-4xl font-black text-cricket-neon/20 dark:text-white/5 font-mono">02</span>
-            <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Initialize Upload</h4>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Drag the file into the Sessions vault and specify the analysis type.
-            </p>
-          </div>
-
-          {/* Step 3 */}
-          <div className="space-y-3 relative p-4 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
-            <span className="text-4xl font-black text-cricket-neon/20 dark:text-white/5 font-mono">03</span>
-            <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Skeletal Extract</h4>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              CricVerse AI maps joint positions and matches your stance against elite limits.
-            </p>
-          </div>
-
-          {/* Step 4 */}
-          <div className="space-y-3 relative p-4 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.01]">
-            <span className="text-4xl font-black text-cricket-neon/20 dark:text-white/5 font-mono">04</span>
-            <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Audit & Adjust</h4>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Scrub frame-by-frame, review correction points, and apply drills to rebuild muscle memory.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Why CricVerse */}
-      <section className="p-8 rounded-3xl border border-slate-200 dark:border-white/5 bg-slate-50/70 dark:bg-darkbg-700 shadow-sm relative overflow-hidden">
-        {/* Glow */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 w-72 h-72 bg-cricket-neon/5 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <div className="space-y-6">
-            <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-tight">
-              Traditional Coaching vs. CricVerse AI Posture Diagnostics
+      {/* Elite Safety Standards */}
+      <section className="relative rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 overflow-hidden group">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[250px] bg-cricket-neon/5 rounded-full blur-[80px] pointer-events-none"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 sm:p-12 relative z-10">
+          
+          <div className="space-y-4 text-center md:text-left">
+            <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Injury Prevention</span>
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+              Protect Your Lumbar Spine and Knee Joints
             </h3>
-            
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-              Human coaching is subject to visual limits, qualitative biases, and scheduling conflicts. CricVerse runs 3D math on your frames instantly, providing a consistent index.
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Fast bowlers are audited for knee buckling (over-flexion) and lumbar rotation overload at release, alerting you when joints cross high-risk impact thresholds.
             </p>
-
-            <div className="space-y-3 text-xs">
-              <div className="flex items-center space-x-3 text-slate-650 dark:text-slate-350 font-semibold">
-                <CheckCircle2 className="w-4 h-4 text-cricket-neon shrink-0" />
-                <span>Biomechanical joint calculations accurate within 5% error margin</span>
-              </div>
-              <div className="flex items-center space-x-3 text-slate-650 dark:text-slate-350 font-semibold">
-                <CheckCircle2 className="w-4 h-4 text-cricket-neon shrink-0" />
-                <span>Continuous slow-motion scrub playback controls at 0.25x and 0.50x speeds</span>
-              </div>
-              <div className="flex items-center space-x-3 text-slate-650 dark:text-slate-350 font-semibold">
-                <CheckCircle2 className="w-4 h-4 text-cricket-neon shrink-0" />
-                <span>Pro model overlay mappings (benchmarked against Virat Kohli & Brett Lee)</span>
-              </div>
-            </div>
           </div>
 
-          {/* Placeholders Illustrations */}
-          <div className="border border-slate-200 dark:border-white/5 rounded-2xl bg-white dark:bg-darkbg-800 p-6 flex flex-col justify-center items-center relative aspect-video overflow-hidden">
-            {/* Grid pattern */}
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#a3e635_1px,transparent_1px)] [background-size:16px_16px]"></div>
+          <div className="flex flex-col items-center justify-center p-6 border border-slate-200/50 dark:border-white/5 rounded-2xl bg-slate-50/50 dark:bg-darkbg-800/50 backdrop-blur-sm relative">
+            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
             
             <ShieldCheck className="w-12 h-12 text-cricket-neon mb-3 relative z-10" />
             <h4 className="font-extrabold text-sm text-slate-900 dark:text-white relative z-10">Elite Safety Standards</h4>
-            <p className="text-[10px] text-slate-450 dark:text-slate-500 text-center mt-1 max-w-[280px] leading-relaxed relative z-10">
+            <p className="text-[10px] text-slate-455 dark:text-slate-500 text-center mt-1 max-w-[280px] leading-relaxed relative z-10">
               Joint strain thresholds are audited to alert bowlers of lumbar overload risks before injury occurs.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 6. Statistics Section */}
-      <section id="stats" className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        
-        {/* Stat 1 */}
+      {/* Statistics Section */}
+      <section id="stats" className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
         <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
           <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-neon to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
             +18.4%
@@ -542,31 +450,29 @@ export default function Landing() {
           <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Average athlete score increase within 30 days</p>
         </div>
 
-        {/* Stat 2 */}
         <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
           <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-cyan to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
             4.2M
           </span>
-          <h4 className="font-extrabold text-xs text-slate-450 dark:text-slate-400 mt-2 uppercase tracking-wider">
+          <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
             Biometric Frames
           </h4>
           <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Skeletal vectors processed and evaluated</p>
         </div>
 
-        {/* Stat 3 */}
         <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
           <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-orange to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
             96.8%
           </span>
-          <h4 className="font-extrabold text-xs text-slate-450 dark:text-slate-400 mt-2 uppercase tracking-wider">
+          <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
             Analysis Accuracy
           </h4>
           <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Postural match alignment correlation rate</p>
         </div>
       </section>
 
-      {/* 7. Testimonials */}
-      <section className="space-y-12">
+      {/* Testimonials */}
+      <section className="space-y-12 relative z-10">
         <div className="text-center max-w-2xl mx-auto space-y-3">
           <h2 className="text-xs font-black tracking-widest text-cricket-neon uppercase">
             Testimonials
@@ -577,10 +483,8 @@ export default function Landing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Testimonial 1 */}
           <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-4 relative">
-            <Quote className="absolute top-6 right-6 w-8 h-8 text-slate-100 dark:text-white/[0.02] pointer-events-none" />
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+            <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
               "CricVerse has changed how we train our batsmen. Instead of generic suggestions, our coaches can point to exact elbow flexion angles on the canvas player. Stance consistency has shot up by 15%."
             </p>
             <div className="flex items-center space-x-3 pt-2">
@@ -591,15 +495,13 @@ export default function Landing() {
               />
               <div>
                 <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Kumar Sangakkara</h4>
-                <span className="text-[9px] text-slate-400 block font-semibold">CricVerse Advisory Board & Head Coach</span>
+                <span className="text-[9px] text-slate-405 block font-bold">CricVerse Advisory Board & Head Coach</span>
               </div>
             </div>
           </div>
 
-          {/* Testimonial 2 */}
           <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-4 relative">
-            <Quote className="absolute top-6 right-6 w-8 h-8 text-slate-100 dark:text-white/[0.02] pointer-events-none" />
-            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium">
+            <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
               "For fast bowlers, monitoring release angle and deceleration stride count is vital. CricVerse AI diagnostics alerts athletes of lumbar knee buckling risks, saving them from stress injuries."
             </p>
             <div className="flex items-center space-x-3 pt-2">
@@ -610,15 +512,15 @@ export default function Landing() {
               />
               <div>
                 <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Brett Lee</h4>
-                <span className="text-[9px] text-slate-400 block font-semibold">Fast Bowling Consultant & Elite Partner</span>
+                <span className="text-[9px] text-slate-405 block font-bold">Fast Bowling Consultant & Elite Partner</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 8. FAQ Section */}
-      <section id="faq" className="max-w-3xl mx-auto space-y-8">
+      {/* FAQ Section */}
+      <section id="faq" className="max-w-3xl mx-auto space-y-8 relative z-10">
         <div className="text-center space-y-3">
           <h2 className="text-xs font-black tracking-widest text-cricket-cyan uppercase">
             FAQ
@@ -649,7 +551,7 @@ export default function Landing() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <p className="pt-2 pb-3 text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                      <p className="pt-2 pb-3 text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
                         {faq.a}
                       </p>
                     </motion.div>
@@ -661,17 +563,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 9. Call To Action (CTA) */}
-      <section className="relative p-12 rounded-3xl border border-slate-200 dark:border-white/5 bg-gradient-to-br from-slate-900 to-darkbg-900 text-center space-y-6 overflow-hidden">
-        {/* Neon Glow spots */}
-        <div className="absolute -top-12 -right-12 w-60 h-60 bg-cricket-neon/10 rounded-full blur-[80px] pointer-events-none"></div>
-        <div className="absolute -bottom-12 -left-12 w-60 h-60 bg-cricket-cyan/10 rounded-full blur-[80px] pointer-events-none"></div>
-
+      {/* CTA */}
+      <section className="relative p-12 rounded-3xl border border-slate-200 dark:border-white/5 bg-gradient-to-br from-slate-900 to-darkbg-900 text-center space-y-6 overflow-hidden z-10 glow-border-green">
         <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white max-w-lg mx-auto leading-tight">
           Ready to Audit Your Cricket Stance?
         </h3>
         
-        <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed font-semibold">
+        <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed font-bold">
           Unlock instant biomechanical evaluations and compare your stance frame-by-frame with elite professional models.
         </p>
 

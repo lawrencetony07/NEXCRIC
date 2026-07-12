@@ -4,16 +4,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   UploadCloud, 
   Search, 
-  SlidersHorizontal, 
   Video, 
   ChevronRight, 
-  Trash2,
-  Calendar,
   Sparkles,
-  AlertCircle,
   Loader2,
-  CheckCircle,
-  Play
 } from 'lucide-react';
 import { Session, MetricBreakdown } from '../api/coachingApi';
 
@@ -48,7 +42,6 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
     return matchesSearch && matchesTab;
   });
 
-  // Start Simulated AI processing
   const handleStartSimulatedUpload = (e: React.FormEvent) => {
     e.preventDefault();
     if (!customTitle) return;
@@ -56,13 +49,11 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
     setIsUploading(true);
     setUploadProgressStep(0);
 
-    // Set interval to increment step
     const interval = setInterval(() => {
       setUploadProgressStep(prev => {
         if (prev >= steps.length - 1) {
           clearInterval(interval);
           
-          // Complete and create session
           setTimeout(() => {
             const randomScore = Math.floor(Math.random() * 20) + 75; // 75 - 95
             const metrics: MetricBreakdown = {
@@ -109,7 +100,6 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
             setIsUploading(false);
             setCustomTitle('');
             
-            // Navigate directly to the new session's analyzer
             navigate(`/analyzer/${newId}`);
           }, 1000);
           return prev;
@@ -127,19 +117,19 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
       className="space-y-8"
     >
       {/* Header */}
-      <div>
+      <div className="border-b border-white/5 pb-6">
         <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
           Session Vault
         </h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Upload and organize your batting and bowling sessions for skeletal node extraction.
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          Upload and organize your batting and bowling sessions for biomechanical audits.
         </p>
       </div>
 
-      {/* Upload Zone & Filter Grid */}
+      {/* Upload Zone & Catalog */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Left Column: Upload Form (1/3 width) */}
+        {/* Upload Form */}
         <div className="lg:col-span-1">
           <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-6">
             <div className="flex items-center space-x-2 text-cricket-neon">
@@ -148,7 +138,6 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
             </div>
 
             <form onSubmit={handleStartSimulatedUpload} className="space-y-4">
-              {/* Session Title */}
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
                   Session Title
@@ -159,11 +148,10 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
                   placeholder="e.g., Cover Drive Net Practice"
                   value={customTitle}
                   onChange={(e) => setCustomTitle(e.target.value)}
-                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkbg-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cricket-neon/50 focus:border-cricket-neon transition-all"
+                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkbg-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cricket-neon/30 focus:border-cricket-neon transition-all"
                 />
               </div>
 
-              {/* Session Type Selector */}
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
                   Analysis Type
@@ -174,34 +162,34 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
                     onClick={() => setSessionTypeToCreate('batting')}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                       sessionTypeToCreate === 'batting'
-                        ? 'bg-cricket-neon/10 border-cricket-neon text-cricket-neon'
-                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-500 hover:text-slate-950 dark:hover:text-white'
+                        ? 'bg-cricket-neon/15 border-cricket-neon text-cricket-neon'
+                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
-                    Batting Technique
+                    Batting Stance
                   </button>
                   <button
                     type="button"
                     onClick={() => setSessionTypeToCreate('bowling')}
                     className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
                       sessionTypeToCreate === 'bowling'
-                        ? 'bg-cricket-cyan/10 border-cricket-cyan text-cricket-cyan'
-                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-500 hover:text-slate-950 dark:hover:text-white'
+                        ? 'bg-cricket-cyan/15 border-cricket-cyan text-cricket-cyan'
+                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
                     }`}
                   >
-                    Bowling Action
+                    Bowling Release
                   </button>
                 </div>
               </div>
 
-              {/* Upload Zone */}
+              {/* Drop Zone */}
               <div className="border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 text-center bg-slate-50 dark:bg-darkbg-800 relative hover:border-cricket-neon/30 transition-colors">
                 <UploadCloud className="w-8 h-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
-                  Drag and drop batting/bowling video
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-350 block mb-1">
+                  Drag and drop session video
                 </span>
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 block mb-3">
-                  MP4, MOV, up to 100MB (Max 30s)
+                  MP4 or MOV, up to 100MB (Max 30s)
                 </span>
                 <input
                   type="file"
@@ -209,7 +197,6 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (file && !customTitle) {
-                      // Autocomplete title
                       setCustomTitle(file.name.replace(/\.[^/.]+$/, ""));
                     }
                   }}
@@ -220,7 +207,7 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
               <button
                 type="submit"
                 disabled={isUploading}
-                className="w-full py-2.5 px-4 rounded-xl text-sm font-semibold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-all duration-200 flex items-center justify-center space-x-2"
+                className="w-full py-2.5 px-4 rounded-xl text-sm font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-all duration-200 flex items-center justify-center space-x-2"
               >
                 <span>Initialize AI Analysis</span>
               </button>
@@ -228,14 +215,13 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
           </div>
         </div>
 
-        {/* Right Column: Sessions Catalog (2/3 width) */}
+        {/* Catalog */}
         <div className="lg:col-span-2 space-y-6">
           
-          {/* Controls: Search, Tabs */}
+          {/* Controls */}
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            {/* Search */}
             <div className="relative w-full sm:w-80">
-              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-405" />
               <input
                 type="text"
                 placeholder="Search audit sessions..."
@@ -245,34 +231,33 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
               />
             </div>
 
-            {/* Filter Tabs */}
             <div className="flex bg-slate-100 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-200 dark:border-white/5 self-stretch sm:self-auto">
               <button
                 onClick={() => setActiveTab('all')}
-                className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'all'
                     ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                    : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 All
               </button>
               <button
                 onClick={() => setActiveTab('batting')}
-                className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'batting'
-                    ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                    ? 'bg-cricket-neon/15 text-cricket-neon shadow-sm'
+                    : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Batting
               </button>
               <button
                 onClick={() => setActiveTab('bowling')}
-                className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                   activeTab === 'bowling'
-                    ? 'bg-white dark:bg-white/10 text-slate-900 dark:text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                    ? 'bg-cricket-cyan/15 text-cricket-cyan shadow-sm'
+                    : 'text-slate-550 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Bowling
@@ -280,151 +265,79 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
             </div>
           </div>
 
-          {/* Session Cards Grid */}
-          {filteredSessions.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {filteredSessions.map((session) => (
-                <div
-                  key={session.id}
-                  onClick={() => navigate(`/analyzer/${session.id}`)}
-                  className="group bg-white dark:bg-darkbg-700 border border-slate-200 dark:border-white/5 hover:border-cricket-neon/20 hover:shadow-lg hover:shadow-cricket-neon/5 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300"
-                >
-                  {/* Thumbnail viewport */}
-                  <div className="aspect-video w-full overflow-hidden relative bg-slate-950 flex items-center justify-center">
-                    <img 
-                      src={session.thumbnail} 
-                      alt={session.title} 
-                      className="w-full h-full object-cover opacity-70 group-hover:scale-102 transition-transform duration-500" 
-                    />
-                    <div className="absolute top-4 right-4 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-slate-950/80 text-white border border-white/5">
-                      {session.type}
-                    </div>
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-darkbg-900/60 to-transparent flex items-end justify-between p-4">
-                      {/* Overall Rating Chip */}
-                      <div className="flex items-center space-x-1 bg-darkbg-900/90 border border-cricket-neon/20 px-2.5 py-1 rounded-lg">
-                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Index</span>
-                        <span className="text-xs text-cricket-neon font-black">{session.overallScore}</span>
-                      </div>
-                      
-                      {/* Interactive click symbol */}
-                      <div className="w-8 h-8 rounded-full bg-cricket-neon text-darkbg-900 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <Play className="w-3.5 h-3.5 fill-darkbg-900 text-darkbg-900 translate-x-[1px]" />
-                      </div>
-                    </div>
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {filteredSessions.map((session) => (
+              <div
+                key={session.id}
+                onClick={() => navigate(`/analyzer/${session.id}`)}
+                className="group border border-slate-200 dark:border-white/5 hover:border-cricket-neon/20 bg-white dark:bg-darkbg-700 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
+              >
+                <div className="aspect-video relative overflow-hidden bg-slate-950">
+                  <img 
+                    src={session.thumbnail} 
+                    alt={session.title} 
+                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
+                  />
+                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wide bg-slate-900/90 text-white border border-white/10">
+                    {session.type}
                   </div>
-
-                  {/* Body Content */}
-                  <div className="p-5 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-1.5 text-slate-400">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-semibold">{session.date}</span>
-                      </div>
-                    </div>
-                    
-                    <h4 className="font-extrabold text-base text-slate-900 dark:text-white group-hover:text-cricket-neon transition-colors truncate">
-                      {session.title}
-                    </h4>
-
-                    {/* Breakdown metrics mini-grid */}
-                    <div className="grid grid-cols-4 gap-1.5 text-[10px] border-t border-slate-100 dark:border-white/5 pt-3">
-                      <div>
-                        <span className="text-slate-400 block font-medium">Setup</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{session.metrics.setup}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block font-medium">Swing</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{session.metrics.backswing}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block font-medium">Contact</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{session.metrics.contact}</span>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 block font-medium">Follow</span>
-                        <span className="font-bold text-slate-700 dark:text-slate-300">{session.metrics.followThrough}</span>
-                      </div>
-                    </div>
+                  <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-darkbg-900/90 border border-cricket-neon/20 px-2 py-1 rounded-lg">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Score</span>
+                    <span className="text-xs text-cricket-neon font-black">{session.overallScore}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-16 border border-dashed border-slate-200 dark:border-white/5 rounded-2xl text-center bg-white dark:bg-darkbg-700">
-              <AlertCircle className="w-8 h-8 text-slate-400 mx-auto mb-2" />
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white">No Audits Found</h4>
-              <p className="text-xs text-slate-400 mt-1">Try resetting the filter tabs or upload a new swing.</p>
-            </div>
-          )}
+
+                <div className="p-4 space-y-2">
+                  <span className="text-[10px] text-slate-400 font-bold block">{session.date}</span>
+                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-cricket-neon transition-colors truncate">
+                    {session.title}
+                  </h3>
+                </div>
+              </div>
+            ))}
+          </div>
 
         </div>
 
       </div>
 
-      {/* Simulated AI Uploading Overlay */}
+      {/* Processing Loader Modal */}
       <AnimatePresence>
         {isUploading && (
-          <motion.div
+          <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-[#06080F]/90 backdrop-blur-md flex items-center justify-center p-4"
+            className="fixed inset-0 bg-darkbg-900/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
           >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="max-w-lg w-full p-8 rounded-2xl bg-darkbg-800 border border-white/5 shadow-2xl relative overflow-hidden"
+            <motion.div 
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.95 }}
+              className="w-full max-w-md p-8 rounded-3xl border border-white/5 bg-darkbg-700 text-center space-y-6 shadow-2xl glow-border-green"
             >
-              {/* Ambient neon radial glows */}
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-cricket-neon/10 rounded-full blur-3xl pointer-events-none"></div>
-              <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-cricket-cyan/10 rounded-full blur-3xl pointer-events-none"></div>
+              <Loader2 className="w-12 h-12 text-cricket-neon animate-spin mx-auto" />
+              
+              <div className="space-y-2">
+                <h3 className="text-xl font-extrabold text-white">Ingesting Analytics Data</h3>
+                <p className="text-xs text-slate-405 leading-relaxed font-bold">
+                  CricVerse AI is extracting postural skeletal coordinates...
+                </p>
+              </div>
 
-              <div className="text-center space-y-6 relative">
-                {/* Loader Spinner */}
-                <div className="relative w-16 h-16 mx-auto">
-                  <div className="absolute inset-0 rounded-full border-4 border-white/5"></div>
-                  <Loader2 className="w-16 h-16 text-cricket-neon animate-spin" />
+              <div className="space-y-4 pt-2">
+                <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <motion.div 
+                    className="h-full bg-cricket-neon rounded-full"
+                    animate={{ width: `${((uploadProgressStep + 1) / steps.length) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
                 </div>
-
-                <div className="space-y-1">
-                  <h3 className="text-lg font-black text-white flex items-center justify-center space-x-1.5">
-                    <span>Analyzing Neural Kinematics</span>
-                    <Sparkles className="w-4 h-4 text-cricket-neon animate-pulse" />
-                  </h3>
-                  <p className="text-xs text-slate-400 font-mono">
-                    Session: <span className="text-cricket-cyan">{customTitle}</span>
-                  </p>
-                </div>
-
-                {/* Progress Timeline Stepper */}
-                <div className="text-left border border-white/5 bg-darkbg-900/50 p-4 rounded-xl space-y-3.5 font-sans">
-                  {steps.map((step, idx) => {
-                    const isActive = idx === uploadProgressStep;
-                    const isCompleted = idx < uploadProgressStep;
-                    return (
-                      <div 
-                        key={step} 
-                        className={`flex items-start text-xs transition-opacity duration-300 ${
-                          isActive ? 'opacity-100 font-bold' : isCompleted ? 'opacity-50' : 'opacity-25'
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <CheckCircle className="w-4 h-4 mr-2.5 text-cricket-neon shrink-0 mt-0.5" />
-                        ) : isActive ? (
-                          <Loader2 className="w-4 h-4 mr-2.5 text-cricket-cyan animate-spin shrink-0 mt-0.5" />
-                        ) : (
-                          <div className="w-4 h-4 rounded-full border border-white/20 mr-2.5 shrink-0 mt-0.5 flex items-center justify-center text-[9px] font-bold font-mono">
-                            {idx + 1}
-                          </div>
-                        )}
-                        <span className={isActive ? 'text-slate-100' : isCompleted ? 'text-slate-300' : 'text-slate-500'}>
-                          {step}
-                        </span>
-                      </div>
-                    );
-                  })}
+                <div className="h-16 flex items-center justify-center p-3 rounded-xl bg-darkbg-800 border border-white/5">
+                  <span className="text-xs font-mono text-cricket-neon tracking-wide">
+                    {steps[uploadProgressStep]}
+                  </span>
                 </div>
               </div>
             </motion.div>
