@@ -262,8 +262,8 @@ export default function Landing() {
   return (
     <div className="space-y-24 pb-16 relative turf-grid-pattern">
       {/* Stadium Spotlight Beams */}
-      <div className="absolute top-0 left-0 right-0 h-[600px] stadium-beam-left pointer-events-none z-0"></div>
-      <div className="absolute top-0 left-0 right-0 h-[600px] stadium-beam-right pointer-events-none z-0"></div>
+      <div className="stadium-beam-left pointer-events-none z-0"></div>
+      <div className="stadium-beam-right pointer-events-none z-0"></div>
 
       {/* Hero Section */}
       <section className="relative pt-12 md:pt-20 overflow-hidden z-10">
