@@ -10,6 +10,7 @@ import {
   Loader2,
 } from 'lucide-react';
 import { Session, MetricBreakdown } from '../api/coachingApi';
+import SpecularCard from '../components/SpecularCard';
 
 interface SessionsProps {
   sessions: Session[];
@@ -131,88 +132,97 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
         
         {/* Upload Form */}
         <div className="lg:col-span-1">
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-6">
-            <div className="flex items-center space-x-2 text-cricket-neon">
-              <Sparkles className="w-5 h-5" />
-              <h3 className="font-extrabold text-slate-900 dark:text-white text-base">New AI Posture Audit</h3>
-            </div>
-
-            <form onSubmit={handleStartSimulatedUpload} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
-                  Session Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g., Cover Drive Net Practice"
-                  value={customTitle}
-                  onChange={(e) => setCustomTitle(e.target.value)}
-                  className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkbg-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cricket-neon/30 focus:border-cricket-neon transition-all"
-                />
+          <SpecularCard
+            radius={16}
+            lineColor="#10b981"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700 shadow-sm space-y-6 w-full h-full">
+              <div className="flex items-center space-x-2 text-cricket-neon">
+                <Sparkles className="w-5 h-5" />
+                <h3 className="font-extrabold text-slate-900 dark:text-white text-base">New AI Posture Audit</h3>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
-                  Analysis Type
-                </label>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setSessionTypeToCreate('batting')}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
-                      sessionTypeToCreate === 'batting'
-                        ? 'bg-cricket-neon/15 border-cricket-neon text-cricket-neon'
-                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    Batting Stance
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSessionTypeToCreate('bowling')}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
-                      sessionTypeToCreate === 'bowling'
-                        ? 'bg-cricket-cyan/15 border-cricket-cyan text-cricket-cyan'
-                        : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    Bowling Release
-                  </button>
+              <form onSubmit={handleStartSimulatedUpload} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
+                    Session Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g., Cover Drive Net Practice"
+                    value={customTitle}
+                    onChange={(e) => setCustomTitle(e.target.value)}
+                    className="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkbg-800 text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cricket-neon/30 focus:border-cricket-neon transition-all"
+                  />
                 </div>
-              </div>
 
-              {/* Drop Zone */}
-              <div className="border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 text-center bg-slate-50 dark:bg-darkbg-800 relative hover:border-cricket-neon/30 transition-colors">
-                <UploadCloud className="w-8 h-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
-                <span className="text-xs font-bold text-slate-700 dark:text-slate-350 block mb-1">
-                  Drag and drop session video
-                </span>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 block mb-3">
-                  MP4 or MOV, up to 100MB (Max 30s)
-                </span>
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file && !customTitle) {
-                      setCustomTitle(file.name.replace(/\.[^/.]+$/, ""));
-                    }
-                  }}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-              </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wide mb-1.5">
+                    Analysis Type
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSessionTypeToCreate('batting')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                        sessionTypeToCreate === 'batting'
+                          ? 'bg-cricket-neon/15 border-cricket-neon text-cricket-neon'
+                          : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Batting Stance
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSessionTypeToCreate('bowling')}
+                      className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                        sessionTypeToCreate === 'bowling'
+                          ? 'bg-cricket-cyan/15 border-cricket-cyan text-cricket-cyan'
+                          : 'border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-white/[0.02] text-slate-550 hover:text-slate-900 dark:hover:text-white'
+                      }`}
+                    >
+                      Bowling Release
+                    </button>
+                  </div>
+                </div>
 
-              <button
-                type="submit"
-                disabled={isUploading}
-                className="w-full py-2.5 px-4 rounded-xl text-sm font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-all duration-200 flex items-center justify-center space-x-2"
-              >
-                <span>Initialize AI Analysis</span>
-              </button>
-            </form>
-          </div>
+                {/* Drop Zone */}
+                <div className="border border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 text-center bg-slate-50 dark:bg-darkbg-800 relative hover:border-cricket-neon/30 transition-colors">
+                  <UploadCloud className="w-8 h-8 text-slate-400 dark:text-slate-500 mx-auto mb-2" />
+                  <span className="text-xs font-bold text-slate-700 dark:text-slate-350 block mb-1">
+                    Drag and drop session video
+                  </span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-500 block mb-3">
+                    MP4 or MOV, up to 100MB (Max 30s)
+                  </span>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file && !customTitle) {
+                        setCustomTitle(file.name.replace(/\.[^/.]+$/, ""));
+                      }
+                    }}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="w-full py-2.5 px-4 rounded-xl text-sm font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 transition-all duration-200 flex items-center justify-center space-x-2"
+                >
+                  <span>Initialize AI Analysis</span>
+                </button>
+              </form>
+            </div>
+          </SpecularCard>
         </div>
 
         {/* Catalog */}
@@ -267,35 +277,47 @@ export default function Sessions({ sessions, onAddSession }: SessionsProps) {
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {filteredSessions.map((session) => (
-              <div
-                key={session.id}
-                onClick={() => navigate(`/analyzer/${session.id}`)}
-                className="group border border-slate-200 dark:border-white/5 hover:border-cricket-neon/20 bg-white dark:bg-darkbg-700 rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                <div className="aspect-video relative overflow-hidden bg-slate-950">
-                  <img 
-                    src={session.thumbnail} 
-                    alt={session.title} 
-                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
-                  />
-                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wide bg-slate-900/90 text-white border border-white/10">
-                    {session.type}
-                  </div>
-                  <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-darkbg-900/90 border border-cricket-neon/20 px-2 py-1 rounded-lg">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Score</span>
-                    <span className="text-xs text-cricket-neon font-black">{session.overallScore}</span>
-                  </div>
-                </div>
+            {filteredSessions.map((session) => {
+              const cardColor = session.overallScore >= 80 ? "#10b981" : session.overallScore >= 70 ? "#00f0ff" : "#f59e0b";
+              return (
+                <SpecularCard
+                  key={session.id}
+                  radius={16}
+                  lineColor={cardColor}
+                  baseColor="rgba(255, 255, 255, 0.05)"
+                  intensity={1.5}
+                  thickness={1.5}
+                  className="w-full flex cursor-pointer"
+                >
+                  <div
+                    onClick={() => navigate(`/analyzer/${session.id}`)}
+                    className="group bg-white dark:bg-darkbg-700/80 backdrop-blur-sm rounded-2xl overflow-hidden w-full h-full transition-all duration-300"
+                  >
+                    <div className="aspect-video relative overflow-hidden bg-slate-950">
+                      <img 
+                        src={session.thumbnail} 
+                        alt={session.title} 
+                        className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" 
+                      />
+                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wide bg-slate-900/90 text-white border border-white/10">
+                        {session.type}
+                      </div>
+                      <div className="absolute bottom-3 left-3 flex items-center space-x-1 bg-darkbg-900/90 border border-cricket-neon/20 px-2 py-1 rounded-lg">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Score</span>
+                        <span className="text-xs text-cricket-neon font-black">{session.overallScore}</span>
+                      </div>
+                    </div>
 
-                <div className="p-4 space-y-2">
-                  <span className="text-[10px] text-slate-400 font-bold block">{session.date}</span>
-                  <h3 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-cricket-neon transition-colors truncate">
-                    {session.title}
-                  </h3>
-                </div>
-              </div>
-            ))}
+                    <div className="p-4 space-y-2">
+                      <span className="text-[10px] text-slate-400 font-bold block">{session.date}</span>
+                      <h3 className="font-extrabold text-sm text-slate-900 dark:text-white group-hover:text-cricket-neon transition-colors truncate">
+                        {session.title}
+                      </h3>
+                    </div>
+                  </div>
+                </SpecularCard>
+              );
+            })}
           </div>
 
         </div>
