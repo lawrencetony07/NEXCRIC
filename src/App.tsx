@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import { mockSessions, Session } from './api/coachingApi';
+import GridScan from './components/GridScan';
 
 export default function App() {
   const [sessions, setSessions] = useState<Session[]>(() => {
@@ -52,8 +53,29 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-50 dark:bg-darkbg-900 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300">
+      <div className="min-h-screen bg-slate-50 dark:bg-darkbg-900 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 relative overflow-x-hidden">
         
+        {/* Futuristic GridScan WebGL Background */}
+        <div className="fixed inset-0 pointer-events-none z-0 opacity-40 dark:opacity-30">
+          <GridScan
+            sensitivity={0.55}
+            lineThickness={1}
+            linesColor={theme === 'dark' ? '#2c2738' : '#e2e8f0'}
+            gridScale={0.1}
+            scanColor="#FF9FFC"
+            scanOpacity={0.4}
+            enablePost={true}
+            bloomIntensity={0.6}
+            chromaticAberration={0.002}
+            noiseIntensity={0.01}
+            lineJitter={0.1}
+            scanGlow={0.5}
+            scanSoftness={2}
+            enableWebcam={false}
+            showPreview={false}
+          />
+        </div>
+
         {/* Global Custom Cursor */}
         <TargetCursor 
           targetSelector="a, button, [role='button'], .cursor-target"
@@ -68,7 +90,7 @@ export default function App() {
         <Navbar theme={theme} toggleTheme={toggleTheme} />
 
         {/* Page Container */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
