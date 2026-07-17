@@ -69,10 +69,10 @@ export default function Landing() {
       gap: "Pierces the gap between mid-on and the bowler/mid-wicket."
     },
     pull: {
-      title: "Pull Shot (Leg-side mid-wicket)",
-      desc: "Played off the back foot to a short-pitched delivery, hitting the ball in a horizontal swiveling arc in front of square on the leg side.",
-      angle: "150° (Deep square leg - Leg-side, Bottom-Right)",
-      gap: "Targets the deep mid-wicket and square leg boundary gap."
+      title: "Pull Shot (Leg-side deep square leg)",
+      desc: "Played off the back foot to a short-pitched delivery, hitting the ball in a horizontal swiveling arc square or behind square on the leg side.",
+      angle: "150° (Deep square leg - Leg-side, Top-Right)",
+      gap: "Targets the deep square leg and backward square leg boundary gap."
     },
     square: {
       title: "Square Cut (Past point)",
@@ -561,7 +561,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 215,185 265,230"
+                          d="M 160,140 Q 215,115 265,90"
                           fill="none"
                           stroke="#ef4444"
                           strokeWidth="2.5"
@@ -570,7 +570,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="265" cy="230" r="4.5" className="fill-[#ef4444] animate-pulse" />
+                        <circle cx="265" cy="90" r="4.5" className="fill-[#ef4444] animate-pulse" />
                       </g>
                     )}
 
