@@ -59,17 +59,17 @@ export default function App() {
         <div className="fixed inset-0 pointer-events-none z-0 opacity-40 dark:opacity-30">
           <GridScan
             sensitivity={0.55}
-            lineThickness={1}
+            lineThickness={1.8}
             linesColor={theme === 'dark' ? '#2c2738' : '#e2e8f0'}
             gridScale={0.1}
             scanColor="#10b981"
-            scanOpacity={0.4}
+            scanOpacity={0.65}
             enablePost={true}
-            bloomIntensity={0.6}
+            bloomIntensity={1.0}
             chromaticAberration={0.002}
             noiseIntensity={0.01}
             lineJitter={0.1}
-            scanGlow={0.5}
+            scanGlow={0.8}
             scanSoftness={2}
             enableWebcam={false}
             showPreview={false}
