@@ -62,7 +62,7 @@ export default function App() {
             lineThickness={1}
             linesColor={theme === 'dark' ? '#2c2738' : '#e2e8f0'}
             gridScale={0.1}
-            scanColor="#FF9FFC"
+            scanColor="#10b981"
             scanOpacity={0.4}
             enablePost={true}
             bloomIntensity={0.6}
