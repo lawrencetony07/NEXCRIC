@@ -24,7 +24,81 @@ export default function Landing() {
   const [heroFrame, setHeroFrame] = useState(0);
   const heroCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-  const [activeStadiumShot, setActiveStadiumShot] = useState<'all' | 'cover' | 'pull' | 'straight' | 'cut'>('all');
+  const [activeStadiumShot, setActiveStadiumShot] = useState<
+    'all' | 'cover' | 'straight' | 'on' | 'pull' | 'cut' | 'square' | 'sweep' | 'glance'
+  >('all');
+
+  const shotsList: { id: typeof activeStadiumShot; name: string; color: string; borderGlow: string }[] = [
+    { id: 'all', name: 'All Shots', color: 'bg-white text-darkbg-900', borderGlow: '' },
+    { id: 'cover', name: 'Cover Drive', color: 'bg-[#10b981] text-white', borderGlow: 'shadow-[#10b981]/20' },
+    { id: 'straight', name: 'Straight Drive', color: 'bg-[#00f0ff] text-darkbg-900', borderGlow: 'shadow-[#00f0ff]/20' },
+    { id: 'on', name: 'On Drive', color: 'bg-[#00ffb2] text-darkbg-900', borderGlow: 'shadow-[#00ffb2]/20' },
+    { id: 'pull', name: 'Pull Shot', color: 'bg-[#ef4444] text-white', borderGlow: 'shadow-[#ef4444]/20' },
+    { id: 'square', name: 'Square Cut', color: 'bg-[#f59e0b] text-darkbg-900', borderGlow: 'shadow-[#f59e0b]/20' },
+    { id: 'sweep', name: 'Sweep Shot', color: 'bg-[#d946ef] text-white', borderGlow: 'shadow-[#d946ef]/20' },
+    { id: 'cut', name: 'Late Cut', color: 'bg-[#ff6b35] text-white', borderGlow: 'shadow-[#ff6b35]/20' },
+    { id: 'glance', name: 'Leg Glance', color: 'bg-[#3b82f6] text-white', borderGlow: 'shadow-[#3b82f6]/20' },
+  ];
+
+  const shotDetails: Record<
+    typeof activeStadiumShot,
+    { title: string; desc: string; angle: string; gap: string }
+  > = {
+    all: {
+      title: "Interactive 360° Shot Wagon Wheel",
+      desc: "Trace your shots across a virtual representation of the cricket ground. CricVerse maps the angle, height, and velocity vectors of your strokes, automatically displaying fielder layout constraints and boundary clearance stats.",
+      angle: "Full 360° Spray",
+      gap: "Multiple boundary scoring zones mapped across all quadrants."
+    },
+    cover: {
+      title: "Cover Drive (Off-Side front foot)",
+      desc: "Played off the front foot to a full delivery outside off stump, sending the ball through the covers. Elite players maintain a high elbow and lean into the line of the ball.",
+      angle: "Off-Side (~45° to ~60°)",
+      gap: "Beats the cover-point and extra-cover fielders."
+    },
+    straight: {
+      title: "Straight Drive (Down the ground)",
+      desc: "Played with a straight face of the bat, directing the ball straight back past the bowler. Requires perfect balance and keeping the head directly over the ball at contact.",
+      angle: "Straight (~0° / 360°)",
+      gap: "Pierces the gap between mid-off and the bowler."
+    },
+    on: {
+      title: "On Drive (Mid-On region)",
+      desc: "Played off the front foot, directing the ball to the leg-side of the bowler (mid-on). Requires quick wrist roll and closing the bat face slightly at impact.",
+      angle: "On-Side (~15° to ~30°)",
+      gap: "Pierces the gap between mid-on and the bowler/mid-wicket."
+    },
+    pull: {
+      title: "Pull Shot (Leg-side mid-wicket)",
+      desc: "Played off the back foot to a short-pitched delivery, hitting the ball in a horizontal swiveling arc in front of square on the leg side.",
+      angle: "Leg-Side (~120° to ~135°)",
+      gap: "Targets the deep mid-wicket and square leg boundary gap."
+    },
+    square: {
+      title: "Square Cut (Past point)",
+      desc: "Played off the back foot to a wide, short delivery, cutting the ball square on the off-side. Requires fast wrist snap and extending arms fully.",
+      angle: "Square Off-Side (~90°)",
+      gap: "Flies through the point and backward point region."
+    },
+    sweep: {
+      title: "Sweep Shot (Square leg sweep)",
+      desc: "Played by kneeling on one knee and sweeping the ball across the line to the leg-side. Excellent for countering spin bowlers on turning tracks.",
+      angle: "Square Leg-Side (~270° / -90°)",
+      gap: "Beats the backward square leg and short fine leg fielders."
+    },
+    cut: {
+      title: "Late Cut (Behind third man)",
+      desc: "Played very late under the eyes to a short, wide delivery, guiding the ball behind square on the off-side towards third man.",
+      angle: "Behind Square Off-Side (~135°)",
+      gap: "Guides the ball past slip / gully to the third man boundary."
+    },
+    glance: {
+      title: "Leg Glance / Flick (Fine leg)",
+      desc: "Played by flicking a delivery on the pads using wrists, directing the ball behind square on the leg-side towards fine leg.",
+      angle: "Behind Square Leg-Side (~225°)",
+      gap: "Beats the keeper and short fine leg to the boundary."
+    }
+  };
 
   // Play animation loop in hero
   useEffect(() => {
@@ -422,7 +496,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'cover') && (
                       <g>
                         <motion.path
-                          d="M 160,160 Q 110,120 70,80"
+                          d="M 160,180 Q 110,130 70,80"
                           fill="none"
                           stroke="#10b981"
                           strokeWidth="2.5"
@@ -431,24 +505,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="70" cy="80" r="4.5" className="fill-cricket-neon animate-pulse" />
-                      </g>
-                    )}
-
-                    {/* Pull Shot (Red line to leg-side boundary) */}
-                    {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
-                      <g>
-                        <motion.path
-                          d="M 160,160 Q 210,190 250,225"
-                          fill="none"
-                          stroke="#ef4444"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          initial={{ pathLength: 0 }}
-                          animate={{ pathLength: 1 }}
-                          transition={{ duration: 0.6 }}
-                        />
-                        <circle cx="250" cy="225" r="4.5" className="fill-cricket-orange animate-pulse" />
+                        <circle cx="70" cy="80" r="4.5" className="fill-[#10b981] animate-pulse" />
                       </g>
                     )}
 
@@ -456,7 +513,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'straight') && (
                       <g>
                         <motion.path
-                          d="M 160,160 Q 160,100 160,25"
+                          d="M 160,180 Q 155,100 150,25"
                           fill="none"
                           stroke="#00f0ff"
                           strokeWidth="2.5"
@@ -465,15 +522,49 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="160" cy="25" r="4.5" className="fill-cricket-cyan animate-pulse" />
+                        <circle cx="150" cy="25" r="4.5" className="fill-[#00f0ff] animate-pulse" />
                       </g>
                     )}
 
-                    {/* Late Cut (Gold line to third man) */}
-                    {(activeStadiumShot === 'all' || activeStadiumShot === 'cut') && (
+                    {/* On Drive (Mint line to leg-side straight) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'on') && (
                       <g>
                         <motion.path
-                          d="M 160,160 Q 100,200 55,235"
+                          d="M 160,180 Q 165,100 170,25"
+                          fill="none"
+                          stroke="#00ffb2"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="170" cy="25" r="4.5" className="fill-[#00ffb2] animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Pull Shot (Red line to leg-side boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
+                      <g>
+                        <motion.path
+                          d="M 160,180 Q 210,130 250,80"
+                          fill="none"
+                          stroke="#ef4444"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="250" cy="80" r="4.5" className="fill-[#ef4444] animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Square Cut (Gold line to point boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'square') && (
+                      <g>
+                        <motion.path
+                          d="M 160,180 Q 100,180 30,180"
                           fill="none"
                           stroke="#f59e0b"
                           strokeWidth="2.5"
@@ -482,7 +573,58 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="55" cy="235" r="4.5" className="fill-cricket-gold animate-pulse" />
+                        <circle cx="30" cy="180" r="4.5" className="fill-[#f59e0b] animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Sweep Shot (Magenta line to square leg boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'sweep') && (
+                      <g>
+                        <motion.path
+                          d="M 160,180 Q 220,180 290,180"
+                          fill="none"
+                          stroke="#d946ef"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="290" cy="180" r="4.5" className="fill-[#d946ef] animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Late Cut (Orange line to third man) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'cut') && (
+                      <g>
+                        <motion.path
+                          d="M 160,180 Q 100,210 55,235"
+                          fill="none"
+                          stroke="#ff6b35"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="55" cy="235" r="4.5" className="fill-[#ff6b35] animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Leg Glance / Fine Leg (Light Blue line to fine leg) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'glance') && (
+                      <g>
+                        <motion.path
+                          d="M 160,180 Q 220,210 265,235"
+                          fill="none"
+                          stroke="#3b82f6"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="265" cy="235" r="4.5" className="fill-[#3b82f6] animate-pulse" />
                       </g>
                     )}
                   </AnimatePresence>
@@ -497,62 +639,45 @@ export default function Landing() {
                 </svg>
               </div>
               
-              <div className="flex flex-wrap justify-center gap-2">
-                <button 
-                  onClick={() => setActiveStadiumShot('all')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'all' ? 'bg-white text-darkbg-900' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-                >
-                  All Shots
-                </button>
-                <button 
-                  onClick={() => setActiveStadiumShot('cover')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cover' ? 'bg-cricket-neon text-darkbg-900 shadow-sm shadow-cricket-neon/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-                >
-                  Cover Drive
-                </button>
-                <button 
-                  onClick={() => setActiveStadiumShot('pull')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'pull' ? 'bg-cricket-orange text-white shadow-sm shadow-cricket-orange/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-                >
-                  Pull Shot
-                </button>
-                <button 
-                  onClick={() => setActiveStadiumShot('straight')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'straight' ? 'bg-cricket-cyan text-darkbg-900 shadow-sm shadow-cricket-cyan/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-                >
-                  Straight Drive
-                </button>
-                <button 
-                  onClick={() => setActiveStadiumShot('cut')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cut' ? 'bg-cricket-gold text-darkbg-900 shadow-sm shadow-cricket-gold/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-                >
-                  Late Cut
-                </button>
+              <div className="flex flex-wrap justify-center gap-1.5 max-w-[340px]">
+                {shotsList.map(shot => (
+                  <button 
+                    key={shot.id}
+                    onClick={() => setActiveStadiumShot(shot.id)}
+                    className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-wider transition-all duration-300 ${
+                      activeStadiumShot === shot.id 
+                        ? `${shot.color} shadow-lg ${shot.borderGlow}` 
+                        : 'bg-white/5 hover:bg-white/10 text-slate-350 border border-white/5'
+                    }`}
+                  >
+                    {shot.name}
+                  </button>
+                ))}
               </div>
             </div>
 
             {/* Column 2: Strategy Info (7/12) */}
-            <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
+            <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
               <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Stadium Mapping</span>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
-                Interactive 360° Shot Wagon Wheel
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
+                {shotDetails[activeStadiumShot]?.title || shotDetails.all.title}
               </h3>
               
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
-                Trace your shots across a virtual representation of the cricket ground. CricVerse maps the angle, height, and velocity vectors of your strokes, automatically displaying fielder layout constraints and boundary clearance stats.
+                {shotDetails[activeStadiumShot]?.desc || shotDetails.all.desc}
               </p>
 
               <div className="border-t border-slate-200/50 dark:border-white/5 pt-4 grid grid-cols-2 gap-4 text-left">
                 <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Fielder Gaps</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Shot Angle / Sector</h4>
                   <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
-                    AI scans mid-on/mid-off depth gaps for high-risk lofted clearance.
+                    {shotDetails[activeStadiumShot]?.angle || shotDetails.all.angle}
                   </p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
-                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Off-Side Bias</h4>
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Tactical Target Gap</h4>
                   <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
-                    Compare cover-drive shot percentages directly against international elite profiles.
+                    {shotDetails[activeStadiumShot]?.gap || shotDetails.all.gap}
                   </p>
                 </div>
               </div>
