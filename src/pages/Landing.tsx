@@ -53,49 +53,49 @@ export default function Landing() {
     cover: {
       title: "Cover Drive (Off-Side front foot)",
       desc: "Played off the front foot to a full delivery outside off stump, sending the ball through the covers. Elite players maintain a high elbow and lean into the line of the ball.",
-      angle: "Off-Side (Bottom-Right, ~135°)",
+      angle: "45° (Deep extra cover - Off-side)",
       gap: "Beats the cover-point and extra-cover fielders."
     },
     straight: {
       title: "Straight Drive (Down the ground)",
       desc: "Played with a straight face of the bat, directing the ball straight back past the bowler. Requires perfect balance and keeping the head directly over the ball at contact.",
-      angle: "Straight Down (~180°)",
+      angle: "90° (Straight down the ground)",
       gap: "Pierces the gap between mid-off and the bowler."
     },
     on: {
       title: "On Drive (Mid-On region)",
       desc: "Played off the front foot, directing the ball to the leg-side of the bowler (mid-on). Requires quick wrist roll and closing the bat face slightly at impact.",
-      angle: "Leg-Side (Bottom-Left, ~225°)",
+      angle: "110° (Mid-on - Leg-side)",
       gap: "Pierces the gap between mid-on and the bowler/mid-wicket."
     },
     pull: {
       title: "Pull Shot (Leg-side mid-wicket)",
       desc: "Played off the back foot to a short-pitched delivery, hitting the ball in a horizontal swiveling arc in front of square on the leg side.",
-      angle: "Leg-Side (Bottom-Left, ~240°)",
+      angle: "150° (Deep square leg - Leg-side)",
       gap: "Targets the deep mid-wicket and square leg boundary gap."
     },
     square: {
       title: "Square Cut (Past point)",
       desc: "Played off the back foot to a wide, short delivery, cutting the ball square on the off-side. Requires fast wrist snap and extending arms fully.",
-      angle: "Square Off-Side (Mid-Right, ~90°)",
+      angle: "0° / 360° (Point / Deep point - Off-side)",
       gap: "Flies through the point and backward point region."
     },
     sweep: {
       title: "Sweep Shot (Square leg sweep)",
       desc: "Played by kneeling on one knee and sweeping the ball across the line to the leg-side. Excellent for countering spin bowlers on turning tracks.",
-      angle: "Square Leg-Side (Mid-Left, ~270°)",
+      angle: "180° (Square leg - Leg-side)",
       gap: "Beats the backward square leg and short fine leg fielders."
     },
     cut: {
       title: "Late Cut (Behind third man)",
       desc: "Played very late under the eyes to a short, wide delivery, guiding the ball behind square on the off-side towards third man.",
-      angle: "Behind Square Off-Side (Top-Right, ~45°)",
+      angle: "315° (Third man - Off-side)",
       gap: "Guides the ball past slip / gully to the third man boundary."
     },
     glance: {
       title: "Leg Glance / Flick (Fine leg)",
       desc: "Played by flicking a delivery on the pads using wrists, directing the ball behind square on the leg-side towards fine leg.",
-      angle: "Behind Square Leg-Side (Top-Left, ~315°)",
+      angle: "225° (Fine leg - Leg-side)",
       gap: "Beats the keeper and short fine leg to the boundary."
     }
   };
@@ -510,7 +510,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'cover') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 210,190 250,240"
+                          d="M 160,140 Q 210,195 255,255"
                           fill="none"
                           stroke="#10b981"
                           strokeWidth="2.5"
@@ -519,7 +519,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="250" cy="240" r="4.5" className="fill-[#10b981] animate-pulse" />
+                        <circle cx="255" cy="255" r="4.5" className="fill-[#10b981] animate-pulse" />
                       </g>
                     )}
 
@@ -527,7 +527,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'straight') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 160,220 160,295"
+                          d="M 160,140 Q 160,220 160,300"
                           fill="none"
                           stroke="#00f0ff"
                           strokeWidth="2.5"
@@ -536,7 +536,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="160" cy="295" r="4.5" className="fill-[#00f0ff] animate-pulse" />
+                        <circle cx="160" cy="300" r="4.5" className="fill-[#00f0ff] animate-pulse" />
                       </g>
                     )}
 
@@ -544,7 +544,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'on') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 150,220 140,295"
+                          d="M 160,140 Q 140,215 120,285"
                           fill="none"
                           stroke="#00ffb2"
                           strokeWidth="2.5"
@@ -553,7 +553,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="140" cy="295" r="4.5" className="fill-[#00ffb2] animate-pulse" />
+                        <circle cx="120" cy="285" r="4.5" className="fill-[#00ffb2] animate-pulse" />
                       </g>
                     )}
 
@@ -561,7 +561,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 110,190 70,240"
+                          d="M 160,140 Q 105,185 55,230"
                           fill="none"
                           stroke="#ef4444"
                           strokeWidth="2.5"
@@ -570,7 +570,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="70" cy="240" r="4.5" className="fill-[#ef4444] animate-pulse" />
+                        <circle cx="55" cy="230" r="4.5" className="fill-[#ef4444] animate-pulse" />
                       </g>
                     )}
 
@@ -578,7 +578,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'square') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 220,140 290,140"
+                          d="M 160,140 Q 230,140 305,140"
                           fill="none"
                           stroke="#f59e0b"
                           strokeWidth="2.5"
@@ -587,7 +587,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="290" cy="140" r="4.5" className="fill-[#f59e0b] animate-pulse" />
+                        <circle cx="305" cy="140" r="4.5" className="fill-[#f59e0b] animate-pulse" />
                       </g>
                     )}
 
@@ -595,7 +595,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'sweep') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 100,140 30,140"
+                          d="M 160,140 Q 90,140 15,140"
                           fill="none"
                           stroke="#d946ef"
                           strokeWidth="2.5"
@@ -604,7 +604,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="30" cy="140" r="4.5" className="fill-[#d946ef] animate-pulse" />
+                        <circle cx="15" cy="140" r="4.5" className="fill-[#d946ef] animate-pulse" />
                       </g>
                     )}
 
@@ -612,7 +612,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'cut') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 220,110 265,85"
+                          d="M 160,140 Q 220,95 280,45"
                           fill="none"
                           stroke="#ff6b35"
                           strokeWidth="2.5"
@@ -621,7 +621,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="265" cy="85" r="4.5" className="fill-[#ff6b35] animate-pulse" />
+                        <circle cx="280" cy="45" r="4.5" className="fill-[#ff6b35] animate-pulse" />
                       </g>
                     )}
 
@@ -629,7 +629,7 @@ export default function Landing() {
                     {(activeStadiumShot === 'all' || activeStadiumShot === 'glance') && (
                       <g>
                         <motion.path
-                          d="M 160,140 Q 100,110 55,85"
+                          d="M 160,140 Q 100,95 40,55"
                           fill="none"
                           stroke="#3b82f6"
                           strokeWidth="2.5"
@@ -638,7 +638,7 @@ export default function Landing() {
                           animate={{ pathLength: 1 }}
                           transition={{ duration: 0.6 }}
                         />
-                        <circle cx="55" cy="85" r="4.5" className="fill-[#3b82f6] animate-pulse" />
+                        <circle cx="40" cy="55" r="4.5" className="fill-[#3b82f6] animate-pulse" />
                       </g>
                     )}
                   </AnimatePresence>
