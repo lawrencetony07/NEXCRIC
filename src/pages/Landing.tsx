@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import TrueFocus from '../components/TrueFocus';
 import { 
   BrainCircuit, 
   ArrowRight, 
@@ -281,6 +282,18 @@ export default function Landing() {
               <Target className="w-3.5 h-3.5" />
               <span>Next-Gen Biomechanical Analysis</span>
             </motion.div>
+            
+            <div className="flex justify-center lg:justify-start">
+              <TrueFocus 
+                sentence="CricVerse AI Coach"
+                manualMode={false}
+                blurAmount={3.5}
+                borderColor="#10b981"
+                glowColor="rgba(16, 185, 129, 0.5)"
+                animationDuration={0.4}
+                pauseBetweenAnimations={1.0}
+              />
+            </div>
 
             <motion.h1
               initial={{ opacity: 0, y: 15 }}
