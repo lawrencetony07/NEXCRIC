@@ -380,181 +380,187 @@ export default function Landing() {
       </section>
 
       {/* Interactive Stadium & Wagon Wheel Section */}
-      <section className="relative p-8 sm:p-12 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 overflow-hidden group z-10">
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cricket-neon/5 rounded-full blur-[80px] pointer-events-none"></div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
-          {/* Column 1: SVG Stadium Layout (5/12) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center space-y-4">
-            <div className="p-4 rounded-2xl bg-[#03060a] border border-white/5 shadow-inner flex items-center justify-center relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-5"></div>
+      <SpecularCard
+        radius={24}
+        lineColor="#00f0ff"
+        baseColor="rgba(255, 255, 255, 0.03)"
+        intensity={1.5}
+        thickness={1.5}
+        className="w-full flex z-10"
+      >
+        <section className="relative p-8 sm:p-12 w-full bg-white dark:bg-darkbg-700 overflow-hidden group">
+          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-cricket-neon/5 rounded-full blur-[80px] pointer-events-none"></div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Column 1: SVG Stadium Layout (5/12) */}
+            <div className="lg:col-span-5 flex flex-col items-center justify-center space-y-4">
+              <div className="p-4 rounded-2xl bg-[#03060a] border border-white/5 shadow-inner flex items-center justify-center relative overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-5"></div>
+                
+                <svg viewBox="0 0 320 320" className="w-full max-w-[280px] sm:max-w-[320px] aspect-square overflow-visible">
+                  {/* Outer Boundary Circle */}
+                  <circle cx="160" cy="160" r="140" className="fill-[#08110b]/60 stroke-green-500/20 stroke-2" />
+                  
+                  {/* Concentric Turf mowing sections */}
+                  <circle cx="160" cy="160" r="115" className="fill-none stroke-green-500/5 stroke-[16px] opacity-40" />
+                  <circle cx="160" cy="160" r="85" className="fill-none stroke-green-500/5 stroke-[16px] opacity-40" />
+                  
+                  {/* 30-Yard Inner Circle */}
+                  <circle cx="160" cy="160" r="70" stroke-dasharray="3,4" className="fill-none stroke-white/10" />
+
+                  {/* Pitch (brown rectangle in the center) */}
+                  <rect x="154" y="130" width="12" height="60" rx="1" className="fill-amber-900/35 stroke-amber-800/20" />
+                  
+                  {/* 360° Degree Angle Guidelines (Soft dashed lines) */}
+                  <line x1="160" y1="20" x2="160" y2="300" stroke-dasharray="2,3" className="stroke-white/5" />
+                  <line x1="20" y1="160" x2="300" y2="160" stroke-dasharray="2,3" className="stroke-white/5" />
+                  <line x1="61" y1="61" x2="259" y2="259" stroke-dasharray="2,3" className="stroke-white/5" />
+                  <line x1="61" y1="259" x2="259" y2="61" stroke-dasharray="2,3" className="stroke-white/5" />
+
+                  <AnimatePresence initial={false}>
+                    {/* Cover Drive (Green line to off-side boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'cover') && (
+                      <g>
+                        <motion.path
+                          d="M 160,160 Q 110,120 70,80"
+                          fill="none"
+                          stroke="#10b981"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="70" cy="80" r="4.5" className="fill-cricket-neon animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Pull Shot (Red line to leg-side boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
+                      <g>
+                        <motion.path
+                          d="M 160,160 Q 210,190 250,225"
+                          fill="none"
+                          stroke="#ef4444"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="250" cy="225" r="4.5" className="fill-cricket-orange animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Straight Drive (Cyan line to straight boundary) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'straight') && (
+                      <g>
+                        <motion.path
+                          d="M 160,160 Q 160,100 160,25"
+                          fill="none"
+                          stroke="#00f0ff"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="160" cy="25" r="4.5" className="fill-cricket-cyan animate-pulse" />
+                      </g>
+                    )}
+
+                    {/* Late Cut (Gold line to third man) */}
+                    {(activeStadiumShot === 'all' || activeStadiumShot === 'cut') && (
+                      <g>
+                        <motion.path
+                          d="M 160,160 Q 100,200 55,235"
+                          fill="none"
+                          stroke="#f59e0b"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                          initial={{ pathLength: 0 }}
+                          animate={{ pathLength: 1 }}
+                          transition={{ duration: 0.6 }}
+                        />
+                        <circle cx="55" cy="235" r="4.5" className="fill-cricket-gold animate-pulse" />
+                      </g>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Fielder position indicators (blinking dots) */}
+                  <g>
+                    <circle cx="245" cy="215" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
+                    <circle cx="85" cy="115" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
+                    <circle cx="130" cy="205" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
+                    <circle cx="190" cy="95" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
+                  </g>
+                </svg>
+              </div>
               
-              <svg viewBox="0 0 320 320" className="w-full max-w-[280px] sm:max-w-[320px] aspect-square overflow-visible">
-                {/* Outer Boundary Circle */}
-                <circle cx="160" cy="160" r="140" className="fill-[#08110b]/60 stroke-green-500/20 stroke-2" />
-                
-                {/* Concentric Turf mowing sections */}
-                <circle cx="160" cy="160" r="115" className="fill-none stroke-green-500/5 stroke-[16px] opacity-40" />
-                <circle cx="160" cy="160" r="85" className="fill-none stroke-green-500/5 stroke-[16px] opacity-40" />
-                
-                {/* 30-Yard Inner Circle */}
-                <circle cx="160" cy="160" r="70" stroke-dasharray="3,4" className="fill-none stroke-white/10" />
-
-                {/* Pitch (brown rectangle in the center) */}
-                <rect x="154" y="130" width="12" height="60" rx="1" className="fill-amber-900/35 stroke-amber-800/20" />
-                
-                {/* Crease lines */}
-                <line x1="154" y1="138" x2="166" y2="138" className="stroke-white/30" strokeWidth="0.8" />
-                <line x1="154" y1="182" x2="166" y2="182" className="stroke-white/30" strokeWidth="0.8" />
-
-                {/* Stumps (drawn as three small gold dots) */}
-                <circle cx="160" cy="138" r="1.5" className="fill-cricket-gold" />
-                <circle cx="160" cy="182" r="1.5" className="fill-cricket-gold" />
-
-                {/* Shot Lines (Wagon Wheel) with dasharray animations */}
-                <AnimatePresence>
-                  {/* Cover Drive (Green line to off-side) */}
-                  {(activeStadiumShot === 'all' || activeStadiumShot === 'cover') && (
-                    <g>
-                      <motion.path
-                        d="M 160,160 Q 110,120 70,80"
-                        fill="none"
-                        stroke="#10b981"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6 }}
-                      />
-                      <circle cx="70" cy="80" r="4.5" className="fill-cricket-neon animate-pulse" />
-                    </g>
-                  )}
-
-                  {/* Pull Shot (Red line to leg-side boundary) */}
-                  {(activeStadiumShot === 'all' || activeStadiumShot === 'pull') && (
-                    <g>
-                      <motion.path
-                        d="M 160,160 Q 210,190 250,225"
-                        fill="none"
-                        stroke="#ef4444"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6 }}
-                      />
-                      <circle cx="250" cy="225" r="4.5" className="fill-cricket-orange animate-pulse" />
-                    </g>
-                  )}
-
-                  {/* Straight Drive (Cyan line to straight boundary) */}
-                  {(activeStadiumShot === 'all' || activeStadiumShot === 'straight') && (
-                    <g>
-                      <motion.path
-                        d="M 160,160 Q 160,100 160,25"
-                        fill="none"
-                        stroke="#00f0ff"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6 }}
-                      />
-                      <circle cx="160" cy="25" r="4.5" className="fill-cricket-cyan animate-pulse" />
-                    </g>
-                  )}
-
-                  {/* Late Cut (Gold line to third man) */}
-                  {(activeStadiumShot === 'all' || activeStadiumShot === 'cut') && (
-                    <g>
-                      <motion.path
-                        d="M 160,160 Q 100,200 55,235"
-                        fill="none"
-                        stroke="#f59e0b"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        initial={{ pathLength: 0 }}
-                        animate={{ pathLength: 1 }}
-                        transition={{ duration: 0.6 }}
-                      />
-                      <circle cx="55" cy="235" r="4.5" className="fill-cricket-gold animate-pulse" />
-                    </g>
-                  )}
-                </AnimatePresence>
-
-                {/* Fielder position indicators (blinking dots) */}
-                <g>
-                  <circle cx="245" cy="215" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
-                  <circle cx="85" cy="115" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
-                  <circle cx="130" cy="205" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
-                  <circle cx="190" cy="95" r="3.5" className="fill-slate-500 stroke-darkbg-900 stroke-1" />
-                </g>
-              </svg>
-            </div>
-            
-            <div className="flex flex-wrap justify-center gap-2">
-              <button 
-                onClick={() => setActiveStadiumShot('all')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'all' ? 'bg-white text-darkbg-900' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-              >
-                All Shots
-              </button>
-              <button 
-                onClick={() => setActiveStadiumShot('cover')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cover' ? 'bg-cricket-neon text-darkbg-900 shadow-sm shadow-cricket-neon/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-              >
-                Cover Drive
-              </button>
-              <button 
-                onClick={() => setActiveStadiumShot('pull')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'pull' ? 'bg-cricket-orange text-white shadow-sm shadow-cricket-orange/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-              >
-                Pull Shot
-              </button>
-              <button 
-                onClick={() => setActiveStadiumShot('straight')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'straight' ? 'bg-cricket-cyan text-darkbg-900 shadow-sm shadow-cricket-cyan/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-              >
-                Straight Drive
-              </button>
-              <button 
-                onClick={() => setActiveStadiumShot('cut')}
-                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cut' ? 'bg-cricket-gold text-darkbg-900 shadow-sm shadow-cricket-gold/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
-              >
-                Late Cut
-              </button>
-            </div>
-          </div>
-
-          {/* Column 2: Strategy Info (7/12) */}
-          <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
-            <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Stadium Mapping</span>
-            <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
-              Interactive 360° Shot Wagon Wheel
-            </h3>
-            
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
-              Trace your shots across a virtual representation of the cricket ground. CricVerse maps the angle, height, and velocity vectors of your strokes, automatically displaying fielder layout constraints and boundary clearance stats.
-            </p>
-
-            <div className="border-t border-slate-200/50 dark:border-white/5 pt-4 grid grid-cols-2 gap-4 text-left">
-              <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
-                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Fielder Gaps</h4>
-                <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
-                  AI scans mid-on/mid-off depth gaps for high-risk lofted clearance.
-                </p>
-              </div>
-              <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
-                <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Off-Side Bias</h4>
-                <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
-                  Compare cover-drive shot percentages directly against international elite profiles.
-                </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <button 
+                  onClick={() => setActiveStadiumShot('all')}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'all' ? 'bg-white text-darkbg-900' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
+                >
+                  All Shots
+                </button>
+                <button 
+                  onClick={() => setActiveStadiumShot('cover')}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cover' ? 'bg-cricket-neon text-darkbg-900 shadow-sm shadow-cricket-neon/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
+                >
+                  Cover Drive
+                </button>
+                <button 
+                  onClick={() => setActiveStadiumShot('pull')}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'pull' ? 'bg-cricket-orange text-white shadow-sm shadow-cricket-orange/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
+                >
+                  Pull Shot
+                </button>
+                <button 
+                  onClick={() => setActiveStadiumShot('straight')}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'straight' ? 'bg-cricket-cyan text-darkbg-900 shadow-sm shadow-cricket-cyan/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
+                >
+                  Straight Drive
+                </button>
+                <button 
+                  onClick={() => setActiveStadiumShot('cut')}
+                  className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all ${activeStadiumShot === 'cut' ? 'bg-cricket-gold text-darkbg-900 shadow-sm shadow-cricket-gold/10' : 'bg-white/5 hover:bg-white/10 text-slate-350'}`}
+                >
+                  Late Cut
+                </button>
               </div>
             </div>
-          </div>
 
-        </div>
-      </section>
+            {/* Column 2: Strategy Info (7/12) */}
+            <div className="lg:col-span-7 space-y-5 text-center lg:text-left">
+              <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Stadium Mapping</span>
+              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight tracking-tight">
+                Interactive 360° Shot Wagon Wheel
+              </h3>
+              
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
+                Trace your shots across a virtual representation of the cricket ground. CricVerse maps the angle, height, and velocity vectors of your strokes, automatically displaying fielder layout constraints and boundary clearance stats.
+              </p>
+
+              <div className="border-t border-slate-200/50 dark:border-white/5 pt-4 grid grid-cols-2 gap-4 text-left">
+                <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Fielder Gaps</h4>
+                  <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
+                    AI scans mid-on/mid-off depth gaps for high-risk lofted clearance.
+                  </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-slate-50/50 dark:bg-darkbg-800/40 border border-slate-200/50 dark:border-white/5">
+                  <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-450">Off-Side Bias</h4>
+                  <p className="text-xs text-slate-700 dark:text-slate-200 font-semibold mt-1">
+                    Compare cover-drive shot percentages directly against international elite profiles.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+      </SpecularCard>
 
       {/* AI Coach Features */}
       <section id="features" className="space-y-12 relative z-10">
@@ -640,29 +646,29 @@ export default function Landing() {
       </section>
 
       {/* Elite Safety Standards */}
-      <section className="relative rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 overflow-hidden group">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[250px] bg-cricket-neon/5 rounded-full blur-[80px] pointer-events-none"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 sm:p-12 relative z-10">
-          
-          <div className="space-y-4 text-center md:text-left">
-            <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Injury Prevention</span>
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
-              Protect Your Lumbar Spine and Knee Joints
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-              Fast bowlers are audited for knee buckling (over-flexion) and lumbar rotation overload at release, alerting you when joints cross high-risk impact thresholds.
-            </p>
-          </div>
+      <SpecularCard
+        radius={24}
+        lineColor="#10b981"
+        baseColor="rgba(255, 255, 255, 0.03)"
+        intensity={1.5}
+        thickness={1.5}
+        className="w-full flex z-10"
+      >
+        <section className="relative w-full rounded-3xl bg-white dark:bg-darkbg-700 overflow-hidden group">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[250px] bg-cricket-neon/5 rounded-full blur-[80px] pointer-events-none"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center p-8 sm:p-12 relative z-10">
+            
+            <div className="space-y-4 text-center md:text-left">
+              <span className="text-xs font-black tracking-widest text-cricket-cyan uppercase">Injury Prevention</span>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
+                Protect Your Lumbar Spine and Knee Joints
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Fast bowlers are audited for knee buckling (over-flexion) and lumbar rotation overload at release, alerting you when joints cross high-risk impact thresholds.
+              </p>
+            </div>
 
-          <SpecularCard
-            radius={16}
-            lineColor="#10b981"
-            baseColor="rgba(255, 255, 255, 0.05)"
-            intensity={1.5}
-            thickness={1.5}
-            className="w-full flex"
-          >
-            <div className="flex flex-col items-center justify-center p-6 h-full w-full bg-slate-50/50 dark:bg-darkbg-800/50 backdrop-blur-sm relative rounded-2xl">
+            <div className="flex flex-col items-center justify-center p-6 border border-slate-200/50 dark:border-white/5 rounded-2xl bg-slate-50/50 dark:bg-darkbg-800/50 backdrop-blur-sm relative w-full h-full">
               <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
               
               <ShieldCheck className="w-12 h-12 text-cricket-neon mb-3 relative z-10" />
@@ -671,9 +677,9 @@ export default function Landing() {
                 Joint strain thresholds are audited to alert bowlers of lumbar overload risks before injury occurs.
               </p>
             </div>
-          </SpecularCard>
-        </div>
-      </section>
+          </div>
+        </section>
+      </SpecularCard>
 
       {/* Statistics Section */}
       <section id="stats" className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
@@ -846,25 +852,34 @@ export default function Landing() {
       </section>
 
       {/* CTA */}
-      <section className="relative p-12 rounded-3xl border border-slate-200 dark:border-white/5 bg-gradient-to-br from-slate-900 to-darkbg-900 text-center space-y-6 overflow-hidden z-10 glow-border-green">
-        <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white max-w-lg mx-auto leading-tight">
-          Ready to Audit Your Cricket Stance?
-        </h3>
-        
-        <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed font-bold">
-          Unlock instant biomechanical evaluations and compare your stance frame-by-frame with elite professional models.
-        </p>
+      <SpecularCard
+        radius={24}
+        lineColor="#10b981"
+        baseColor="rgba(255, 255, 255, 0.03)"
+        intensity={1.5}
+        thickness={1.5}
+        className="w-full flex z-10"
+      >
+        <section className="relative p-12 w-full bg-gradient-to-br from-slate-900 to-darkbg-900 text-center space-y-6 overflow-hidden rounded-3xl">
+          <h3 className="text-3xl sm:text-4xl font-black tracking-tight text-white max-w-lg mx-auto leading-tight">
+            Ready to Audit Your Cricket Stance?
+          </h3>
+          
+          <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed font-bold">
+            Unlock instant biomechanical evaluations and compare your stance frame-by-frame with elite professional models.
+          </p>
 
-        <div className="pt-2 flex justify-center">
-          <button
-            onClick={() => navigate('/register')}
-            className="flex items-center space-x-2 px-8 py-3.5 rounded-xl font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 shadow-lg shadow-cricket-neon/15 hover:shadow-cricket-neon/25 transition-all duration-200"
-          >
-            <span>Activate Free Account</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </section>
+          <div className="pt-2 flex justify-center">
+            <button
+              onClick={() => navigate('/register')}
+              className="flex items-center space-x-2 px-8 py-3.5 rounded-xl font-bold bg-cricket-neon text-darkbg-900 hover:bg-cricket-neon/90 shadow-lg shadow-cricket-neon/15 hover:shadow-cricket-neon/25 transition-all duration-200"
+            >
+              <span>Activate Free Account</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </section>
+      </SpecularCard>
 
     </div>
   );
