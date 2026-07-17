@@ -485,6 +485,14 @@ export default function Landing() {
                   {/* Pitch (brown rectangle in the center) */}
                   <rect x="154" y="130" width="12" height="60" rx="1" className="fill-amber-900/35 stroke-amber-800/20" />
                   
+                  {/* Batsman Crease Point (Right-Hander orientation) */}
+                  <circle cx="160" cy="180" r="3.5" className="fill-cricket-neon shadow-sm" />
+                  <text x="160" y="195" fill="rgba(255,255,255,0.4)" fontSize="7" fontWeight="bold" textAnchor="middle" className="font-mono">BATTER</text>
+
+                  {/* Off-Side & Leg-Side text tags for Right-Handed Batter */}
+                  <text x="50" y="163" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="900" textAnchor="middle" letterSpacing="1" className="font-mono">OFF SIDE</text>
+                  <text x="270" y="163" fill="rgba(255,255,255,0.25)" fontSize="9" fontWeight="900" textAnchor="middle" letterSpacing="1" className="font-mono">LEG SIDE</text>
+                  
                   {/* 360° Degree Angle Guidelines (Soft dashed lines) */}
                   <line x1="160" y1="20" x2="160" y2="300" stroke-dasharray="2,3" className="stroke-white/5" />
                   <line x1="20" y1="160" x2="300" y2="160" stroke-dasharray="2,3" className="stroke-white/5" />
