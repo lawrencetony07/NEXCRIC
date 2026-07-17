@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import TrueFocus from '../components/TrueFocus';
-import ChromaGrid from '../components/ChromaGrid';
 import { 
   BrainCircuit, 
   ArrowRight, 
@@ -259,36 +258,6 @@ export default function Landing() {
     {
       q: "Who designed the optimal biomechanical models?",
       a: "Our posture benchmarks were developed in collaboration with elite biomechanists, national sports academies, and professional cricketers (including coaches like Brett Lee and Kumar Sangakkara) to map safe, high-velocity, and consistent posture structures."
-    }
-  ];
-
-  const featureItems = [
-    {
-      image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=400&h=300&fit=crop",
-      title: "Skeletal Pose Tracking",
-      subtitle: "Extracts 14 core biomechanical joint coordinates in 2D vector layouts automatically from regular mobile videos.",
-      handle: "VISION AI",
-      borderColor: "#10B981",
-      gradient: "linear-gradient(145deg, #0d5c3a, #030712)",
-      url: "#features"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1607962837359-5e7e89f866ad?w=400&h=300&fit=crop",
-      title: "Angle & Force Analytics",
-      subtitle: "Calculates lead elbow extension, knee brace angle, head alignment, and hip opening angles frame-by-frame.",
-      handle: "METRICS ENGINE",
-      borderColor: "#00f0ff",
-      gradient: "linear-gradient(145deg, #065b75, #030712)",
-      url: "#features"
-    },
-    {
-      image: "https://images.unsplash.com/photo-1544698310-74ea9d1c8258?w=400&h=300&fit=crop",
-      title: "Pro Technique Matching",
-      subtitle: "Superimpose your skeleton model directly onto optimized benchmark structures of elite international cricketers.",
-      handle: "ALIGNMENT AI",
-      borderColor: "#f59e0b",
-      gradient: "linear-gradient(145deg, #7c2d12, #030712)",
-      url: "#features"
     }
   ];
 
@@ -591,14 +560,45 @@ export default function Landing() {
           </p>
         </div>
 
-        <div className="relative min-h-[380px] w-full mt-8">
-          <ChromaGrid 
-            items={featureItems}
-            radius={250}
-            damping={0.4}
-            fadeOut={0.5}
-            ease="power3.out"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1 */}
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-neon/20 transition-all duration-300 group">
+            <div className="w-10 h-10 rounded-xl bg-cricket-neon/10 text-cricket-neon flex items-center justify-center mb-4">
+              <Cpu className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-neon transition-colors">
+              Skeletal Pose Tracking
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Extracts 14 core biomechanical joint coordinates in 2D vector layouts automatically from regular mobile videos.
+            </p>
+          </div>
+
+          {/* Card 2 */}
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-cyan/20 transition-all duration-300 group">
+            <div className="w-10 h-10 rounded-xl bg-cricket-cyan/10 text-cricket-cyan flex items-center justify-center mb-4">
+              <Activity className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-cyan transition-colors">
+              Angle & Force Analytics
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Calculates lead elbow extension, knee brace angle, head alignment, and hip opening angles frame-by-frame.
+            </p>
+          </div>
+
+          {/* Card 3 */}
+          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-orange/20 transition-all duration-300 group">
+            <div className="w-10 h-10 rounded-xl bg-cricket-orange/10 text-cricket-orange flex items-center justify-center mb-4">
+              <Users className="w-5 h-5" />
+            </div>
+            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-orange transition-colors">
+              Pro Technique Matching
+            </h4>
+            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+              Superimpose your skeleton model directly onto optimized benchmark structures of elite international cricketers.
+            </p>
+          </div>
         </div>
       </section>
 
