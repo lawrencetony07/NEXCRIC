@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import TargetCursor from './components/TargetCursor';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import Sessions from './pages/Sessions';
@@ -53,6 +54,16 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen bg-slate-50 dark:bg-darkbg-900 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300">
         
+        {/* Global Custom Cursor */}
+        <TargetCursor 
+          targetSelector="a, button, [role='button'], .cursor-target"
+          spinDuration={2}
+          hideDefaultCursor={true}
+          parallaxOn={true}
+          cursorColor="#10b981"
+          cursorColorOnTarget="#00f0ff"
+        />
+
         {/* Navigation Bar */}
         <Navbar theme={theme} toggleTheme={toggleTheme} />
 
