@@ -345,27 +345,36 @@ export default function Landing() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-5 flex justify-center"
           >
-            <div className="relative w-full max-w-[360px] p-5 rounded-3xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700/80 backdrop-blur-xl shadow-2xl overflow-hidden group glow-border-green">
-              <div className="absolute inset-0 bg-gradient-to-tr from-cricket-neon/5 via-transparent to-transparent opacity-50"></div>
-              
-              {/* Header HUD */}
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                  Live Stance Auditor
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-cricket-neon animate-ping"></span>
-              </div>
+            <SpecularCard
+              radius={24}
+              lineColor="#10b981"
+              baseColor="rgba(255, 255, 255, 0.05)"
+              intensity={1.5}
+              thickness={1.5}
+              className="w-full max-w-[360px]"
+            >
+              <div className="relative w-full p-5 rounded-3xl bg-white dark:bg-darkbg-700/80 backdrop-blur-xl shadow-2xl overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-cricket-neon/5 via-transparent to-transparent opacity-50"></div>
+                
+                {/* Header HUD */}
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                    Live Stance Auditor
+                  </span>
+                  <span className="w-2.5 h-2.5 rounded-full bg-cricket-neon animate-ping"></span>
+                </div>
 
-              {/* Live Canvas Mockup */}
-              <div className="rounded-2xl bg-[#06080F] border border-white/5 aspect-square flex items-center justify-center p-3 relative overflow-hidden">
-                <canvas 
-                  ref={heroCanvasRef} 
-                  width={300} 
-                  height={300} 
-                  className="w-full h-full"
-                />
+                {/* Live Canvas Mockup */}
+                <div className="rounded-2xl bg-[#06080F] border border-white/5 aspect-square flex items-center justify-center p-3 relative overflow-hidden">
+                  <canvas 
+                    ref={heroCanvasRef} 
+                    width={300} 
+                    height={300} 
+                    className="w-full h-full"
+                  />
+                </div>
               </div>
-            </div>
+            </SpecularCard>
           </motion.div>
         </div>
       </section>
@@ -645,49 +654,85 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center justify-center p-6 border border-slate-200/50 dark:border-white/5 rounded-2xl bg-slate-50/50 dark:bg-darkbg-800/50 backdrop-blur-sm relative">
-            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            
-            <ShieldCheck className="w-12 h-12 text-cricket-neon mb-3 relative z-10" />
-            <h4 className="font-extrabold text-sm text-slate-900 dark:text-white relative z-10">Elite Safety Standards</h4>
-            <p className="text-[10px] text-slate-455 dark:text-slate-500 text-center mt-1 max-w-[280px] leading-relaxed relative z-10">
-              Joint strain thresholds are audited to alert bowlers of lumbar overload risks before injury occurs.
-            </p>
-          </div>
+          <SpecularCard
+            radius={16}
+            lineColor="#10b981"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="flex flex-col items-center justify-center p-6 h-full w-full bg-slate-50/50 dark:bg-darkbg-800/50 backdrop-blur-sm relative rounded-2xl">
+              <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px]"></div>
+              
+              <ShieldCheck className="w-12 h-12 text-cricket-neon mb-3 relative z-10" />
+              <h4 className="font-extrabold text-sm text-slate-900 dark:text-white relative z-10">Elite Safety Standards</h4>
+              <p className="text-[10px] text-slate-455 dark:text-slate-500 text-center mt-1 max-w-[280px] leading-relaxed relative z-10">
+                Joint strain thresholds are audited to alert bowlers of lumbar overload risks before injury occurs.
+              </p>
+            </div>
+          </SpecularCard>
         </div>
       </section>
 
       {/* Statistics Section */}
       <section id="stats" className="grid grid-cols-1 sm:grid-cols-3 gap-6 relative z-10">
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
-          <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-neon to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
-            +18.4%
-          </span>
-          <h4 className="font-extrabold text-xs text-slate-450 dark:text-slate-400 mt-2 uppercase tracking-wider">
-            Technique Improvement
-          </h4>
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Average athlete score increase within 30 days</p>
-        </div>
+        <SpecularCard
+          radius={16}
+          lineColor="#10b981"
+          baseColor="rgba(255, 255, 255, 0.05)"
+          intensity={1.5}
+          thickness={1.5}
+          className="w-full flex"
+        >
+          <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700 w-full text-center">
+            <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-neon to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
+              +18.4%
+            </span>
+            <h4 className="font-extrabold text-xs text-slate-450 dark:text-slate-400 mt-2 uppercase tracking-wider">
+              Technique Improvement
+            </h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Average athlete score increase within 30 days</p>
+          </div>
+        </SpecularCard>
 
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
-          <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-cyan to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
-            4.2M
-          </span>
-          <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
-            Biometric Frames
-          </h4>
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Skeletal vectors processed and evaluated</p>
-        </div>
+        <SpecularCard
+          radius={16}
+          lineColor="#00f0ff"
+          baseColor="rgba(255, 255, 255, 0.05)"
+          intensity={1.5}
+          thickness={1.5}
+          className="w-full flex"
+        >
+          <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700 w-full text-center">
+            <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-cyan to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
+              4.2M
+            </span>
+            <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
+              Biometric Frames
+            </h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Skeletal vectors processed and evaluated</p>
+          </div>
+        </SpecularCard>
 
-        <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 text-center">
-          <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-orange to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
-            96.8%
-          </span>
-          <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
-            Analysis Accuracy
-          </h4>
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Postural match alignment correlation rate</p>
-        </div>
+        <SpecularCard
+          radius={16}
+          lineColor="#f59e0b"
+          baseColor="rgba(255, 255, 255, 0.05)"
+          intensity={1.5}
+          thickness={1.5}
+          className="w-full flex"
+        >
+          <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700 w-full text-center">
+            <span className="text-4xl sm:text-5xl font-black tracking-tight text-slate-900 dark:text-white bg-gradient-to-r from-cricket-orange to-slate-500 dark:to-white bg-clip-text text-transparent font-mono">
+              96.8%
+            </span>
+            <h4 className="font-extrabold text-xs text-slate-455 dark:text-slate-400 mt-2 uppercase tracking-wider">
+              Analysis Accuracy
+            </h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1">Postural match alignment correlation rate</p>
+          </div>
+        </SpecularCard>
       </section>
 
       {/* Testimonials */}
@@ -702,39 +747,57 @@ export default function Landing() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-4 relative">
-            <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
-              "CricVerse has changed how we train our batsmen. Instead of generic suggestions, our coaches can point to exact elbow flexion angles on the canvas player. Stance consistency has shot up by 15%."
-            </p>
-            <div className="flex items-center space-x-3 pt-2">
-              <img 
-                src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop" 
-                alt="Kumar" 
-                className="w-9 h-9 rounded-xl object-cover"
-              />
-              <div>
-                <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Kumar Sangakkara</h4>
-                <span className="text-[9px] text-slate-405 block font-bold">CricVerse Advisory Board & Head Coach</span>
+          <SpecularCard
+            radius={16}
+            lineColor="#10b981"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700/80 backdrop-blur-sm shadow-sm space-y-4 h-full w-full relative">
+              <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
+                "CricVerse has changed how we train our batsmen. Instead of generic suggestions, our coaches can point to exact elbow flexion angles on the canvas player. Stance consistency has shot up by 15%."
+              </p>
+              <div className="flex items-center space-x-3 pt-2">
+                <img 
+                  src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop" 
+                  alt="Kumar" 
+                  className="w-9 h-9 rounded-xl object-cover"
+                />
+                <div>
+                  <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Kumar Sangakkara</h4>
+                  <span className="text-[9px] text-slate-405 block font-bold">CricVerse Advisory Board & Head Coach</span>
+                </div>
               </div>
             </div>
-          </div>
+          </SpecularCard>
 
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm space-y-4 relative">
-            <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
-              "For fast bowlers, monitoring release angle and deceleration stride count is vital. CricVerse AI diagnostics alerts athletes of lumbar knee buckling risks, saving them from stress injuries."
-            </p>
-            <div className="flex items-center space-x-3 pt-2">
-              <img 
-                src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop" 
-                alt="Brett" 
-                className="w-9 h-9 rounded-xl object-cover"
-              />
-              <div>
-                <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Brett Lee</h4>
-                <span className="text-[9px] text-slate-405 block font-bold">Fast Bowling Consultant & Elite Partner</span>
+          <SpecularCard
+            radius={16}
+            lineColor="#00f0ff"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700/80 backdrop-blur-sm shadow-sm space-y-4 h-full w-full relative">
+              <p className="text-xs text-slate-655 dark:text-slate-300 leading-relaxed font-semibold">
+                "For fast bowlers, monitoring release angle and deceleration stride count is vital. CricVerse AI diagnostics alerts athletes of lumbar knee buckling risks, saving them from stress injuries."
+              </p>
+              <div className="flex items-center space-x-3 pt-2">
+                <img 
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop" 
+                  alt="Brett" 
+                  className="w-9 h-9 rounded-xl object-cover"
+                />
+                <div>
+                  <h4 className="font-extrabold text-xs text-slate-900 dark:text-white">Brett Lee</h4>
+                  <span className="text-[9px] text-slate-405 block font-bold">Fast Bowling Consultant & Elite Partner</span>
+                </div>
               </div>
             </div>
-          </div>
+          </SpecularCard>
         </div>
       </section>
 
