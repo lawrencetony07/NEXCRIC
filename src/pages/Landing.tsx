@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import TrueFocus from '../components/TrueFocus';
+import SpecularCard from '../components/SpecularCard';
 import { 
   BrainCircuit, 
   ArrowRight, 
@@ -562,43 +563,70 @@ export default function Landing() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1 */}
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-neon/20 transition-all duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-cricket-neon/10 text-cricket-neon flex items-center justify-center mb-4">
-              <Cpu className="w-5 h-5" />
+          <SpecularCard
+            radius={16}
+            lineColor="#10b981"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700/80 backdrop-blur-sm h-full w-full relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-cricket-neon/10 text-cricket-neon flex items-center justify-center mb-4">
+                <Cpu className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-neon transition-colors">
+                Skeletal Pose Tracking
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+                Extracts 14 core biomechanical joint coordinates in 2D vector layouts automatically from regular mobile videos.
+              </p>
             </div>
-            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-neon transition-colors">
-              Skeletal Pose Tracking
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
-              Extracts 14 core biomechanical joint coordinates in 2D vector layouts automatically from regular mobile videos.
-            </p>
-          </div>
+          </SpecularCard>
 
           {/* Card 2 */}
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-cyan/20 transition-all duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-cricket-cyan/10 text-cricket-cyan flex items-center justify-center mb-4">
-              <Activity className="w-5 h-5" />
+          <SpecularCard
+            radius={16}
+            lineColor="#00f0ff"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700/80 backdrop-blur-sm h-full w-full relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-cricket-cyan/10 text-cricket-cyan flex items-center justify-center mb-4">
+                <Activity className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-cyan transition-colors">
+                Angle & Force Analytics
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+                Calculates lead elbow extension, knee brace angle, head alignment, and hip opening angles frame-by-frame.
+              </p>
             </div>
-            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-cyan transition-colors">
-              Angle & Force Analytics
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
-              Calculates lead elbow extension, knee brace angle, head alignment, and hip opening angles frame-by-frame.
-            </p>
-          </div>
+          </SpecularCard>
 
           {/* Card 3 */}
-          <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-darkbg-700 shadow-sm relative overflow-hidden hover:border-cricket-orange/20 transition-all duration-300 group">
-            <div className="w-10 h-10 rounded-xl bg-cricket-orange/10 text-cricket-orange flex items-center justify-center mb-4">
-              <Users className="w-5 h-5" />
+          <SpecularCard
+            radius={16}
+            lineColor="#f59e0b"
+            baseColor="rgba(255, 255, 255, 0.05)"
+            intensity={1.5}
+            thickness={1.5}
+            className="w-full flex"
+          >
+            <div className="p-6 rounded-2xl bg-white dark:bg-darkbg-700/80 backdrop-blur-sm h-full w-full relative overflow-hidden group">
+              <div className="w-10 h-10 rounded-xl bg-cricket-orange/10 text-cricket-orange flex items-center justify-center mb-4">
+                <Users className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-orange transition-colors">
+                Pro Technique Matching
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+                Superimpose your skeleton model directly onto optimized benchmark structures of elite international cricketers.
+              </p>
             </div>
-            <h4 className="font-extrabold text-lg text-slate-900 dark:text-white mb-2 group-hover:text-cricket-orange transition-colors">
-              Pro Technique Matching
-            </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
-              Superimpose your skeleton model directly onto optimized benchmark structures of elite international cricketers.
-            </p>
-          </div>
+          </SpecularCard>
         </div>
       </section>
 
